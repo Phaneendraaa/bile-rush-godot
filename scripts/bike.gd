@@ -309,7 +309,7 @@ func _integrate_forces(st: PhysicsDirectBodyState3D) -> void:
 		# camber: lean of wheel plane relative to ground normal (+ = leaning right)
 		var gamma := atan2(up.dot(wr), up.dot(n))
 		var alpha := atan2(vlat, maxf(absf(vlong), 6.0))
-		var fy := fz * (-C_ALPHA * alpha + C_GAMMA * gamma) if not is_crashed else -fz * clampf(vlat, -1.0, 1.0)
+		var fy := fz * (-C_ALPHA * alpha + C_GAMMA * tan(clampf(gamma, -1.15, 1.15))) if not is_crashed else -fz * clampf(vlat, -1.0, 1.0)
 		# longitudinal demand
 		var fx := 0.0
 		if w == 1:
@@ -379,6 +379,11 @@ func _integrate_forces(st: PhysicsDirectBodyState3D) -> void:
 		if not on_ground:
 			tau *= 0.3
 		st.apply_torque(gf * tau)
+		# steering geometry: a leaned bike yaws at the coordinated-turn rate g*tan(lean)/v
+		if on_ground and vmag > 3.0:
+			var yaw_rate := st.angular_velocity.dot(gn)
+			var want_rate := -9.81 * tan(clampf(lean, -1.1, 1.1)) / maxf(speed, 3.0)
+			st.apply_torque(gn * (want_rate - yaw_rate) * 950.0)
 		# yaw stabiliser at very low speed (rider's feet / steering)
 		if vmag < 4.0 and on_ground:
 			var want_yaw := -steer * 0.8 * smoothstep(0.3, 2.0, vmag)
