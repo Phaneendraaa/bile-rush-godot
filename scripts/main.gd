@@ -217,7 +217,7 @@ func _aids() -> Dictionary:
 		0:
 			return {"abs": true, "tc": true, "wheelie": true, "lean_limit": true}
 		1:
-			return {"abs": true, "tc": true, "wheelie": false, "lean_limit": true}
+			return {"abs": true, "tc": true, "wheelie": true, "lean_limit": true}
 	return {"abs": false, "tc": false, "wheelie": false, "lean_limit": false}
 
 

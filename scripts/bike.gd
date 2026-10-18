@@ -248,8 +248,9 @@ func _integrate_forces(st: PhysicsDirectBodyState3D) -> void:
 		if throttle < 0.05 and speed > 2.0:
 			drive -= (rpm / redline) * 380.0  # engine braking
 		# wheelie control: cut drive as the front lifts (uses last step's pitch)
-		if aids["wheelie"] and drive > 0.0 and pitch > deg_to_rad(4.0):
-			drive *= clampf(1.0 - (pitch - deg_to_rad(4.0)) / deg_to_rad(5.0), 0.0, 1.0)
+		if aids["wheelie"] and drive > 0.0 and pitch > deg_to_rad(9.0):
+			# lets the front come up (wheelies score points) but never lets it loop
+			drive *= clampf(1.0 - (pitch - deg_to_rad(9.0)) / deg_to_rad(5.0), 0.0, 1.0)
 			tc_active = true
 	var d_tuck := lerpf(float(cda[1]), float(cda[0]), tuck)
 	var drag := 0.5 * 1.2 * d_tuck * speed * absf(speed)
@@ -272,6 +273,9 @@ func _integrate_forces(st: PhysicsDirectBodyState3D) -> void:
 	if is_crashed:
 		steer_angle = 0.0
 	var brake_f := brake * (0.0 if is_crashed else 1.0)
+	# rider holds the bike with the brake when stopped and nothing is pressed
+	if not is_crashed and throttle < 0.05 and absf(speed) < 2.0:
+		brake_f = maxf(brake_f, 0.7)
 	var mean_n := Vector3.ZERO
 	for w in 2:
 		var zloc := -WHEELBASE * 0.5 if w == 0 else WHEELBASE * 0.5
