@@ -471,6 +471,9 @@ func _physics_process(dt: float) -> void:
 				ai = AIRider.new()
 				ai.skill = 0.8
 				b["ai"] = ai
+			if traffic and b == player:
+				ai.cars = traffic.cars
+				ai.lanes = traffic.lanes_same if not traffic.two_way else [1.75, 5.25, -1.75]
 			var cmd: Array = ai.drive(body, tr, bodies, dt)
 			body.set("steer", cmd[0])
 			body.set("throttle", cmd[1] if running else 0.0)

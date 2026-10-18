@@ -10,6 +10,8 @@ var brake_decel := 8.5
 var lane_bias := 0.0
 var _d_target := 0.0
 var _steer := 0.0
+var cars: Array = []        # highway traffic (dicts from traffic.gd) to weave through
+var lanes: Array = [1.75, 5.25]
 
 
 ## Returns [steer, throttle, brake]
@@ -27,13 +29,36 @@ func drive(bike, track: TD, others: Array, dt: float) -> Array:
 		var gap: float = o.progress - s
 		if gap > 0.0 and gap < 18.0 + v * 0.3 and absf(o.lateral - bike.lateral) < 2.2 and v > o.speed - 1.0:
 			line = o.lateral + (2.8 if o.lateral < 0.0 else -2.8)
+	var traffic_cap := 1e9
+	if not cars.is_empty():
+		# pick the lane whose nearest vehicle ahead is furthest away; slow down if all are blocked
+		var best_lane: float = line
+		var best_gap := -1.0
+		for ln in lanes:
+			var gap := 1e9
+			for c in cars:
+				var ds: float = float(c["s"]) - s
+				if ds > -6.0 and ds < 140.0 and absf(float(c["d"]) - float(ln)) < 2.3:
+					gap = minf(gap, ds - float(c["len"]) * 0.5)
+			var cost := gap - absf(float(ln) - bike.lateral) * 4.0
+			if cost > best_gap:
+				best_gap = cost
+				best_lane = ln
+		line = best_lane
+		for c in cars:
+			var ds2: float = float(c["s"]) - s
+			if ds2 > 0.0 and ds2 < 70.0 and absf(float(c["d"]) - bike.lateral) < 2.0:
+				var cv: float = c["v"]
+				if c["onc"]:
+					cv = -cv
+				traffic_cap = minf(traffic_cap, cv + ds2 * 0.35)
 	line = clampf(line, -TD.ROAD_HALF + 1.3, TD.ROAD_HALF - 1.3)
 	_d_target = lerpf(_d_target, line, clampf(dt * 1.2, 0.0, 1.0))
 	_steer = lerpf(_steer, pursuit_steer(bike, track, _d_target), clampf(dt * 10.0, 0.0, 1.0))
 	var lean_max := deg_to_rad(8.0) + deg_to_rad(52.0) * smoothstep(3.0, 20.0, v)
 	lean_max = minf(lean_max, atan(1.18 * 0.93))
 
-	var vt := target_speed(bike, track, corner_margin, skill, brake_decel)
+	var vt := minf(target_speed(bike, track, corner_margin, skill, brake_decel), traffic_cap)
 	var thr := clampf((vt - v) * 0.45 + 0.15, 0.0, 1.0)
 	var brk := clampf((v - vt - 1.0) * 0.22, 0.0, 1.0)
 	if brk > 0.0:
