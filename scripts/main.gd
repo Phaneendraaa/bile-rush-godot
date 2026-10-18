@@ -294,6 +294,7 @@ func _showroom() -> void:
 func _go_menu() -> void:
 	get_tree().paused = false
 	state = "menu"
+	audio.silence()
 	ui.show_loading(true)
 	ui.show_hud(false, false)
 	ui.show_pause(false)
@@ -340,6 +341,7 @@ func _set_paused(on: bool) -> void:
 	ui.process_mode = Node.PROCESS_MODE_ALWAYS
 	ui.show_pause(on)
 	if on:
+		audio.silence()
 		state = "paused"
 	else:
 		state = "race" if countdown <= 0.0 else "countdown"
@@ -451,6 +453,7 @@ func _process(dt: float) -> void:
 	if autotest:
 		return
 	if state == "menu":
+		audio.silence()
 		_menu_camera(dt)
 		return
 	if bikes.is_empty():
@@ -479,7 +482,7 @@ func _process(dt: float) -> void:
 	_update_hud()
 	if not player.is_empty():
 		var pb: RigidBody3D = player["body"]
-		audio.update(pb, state != "paused")
+		audio.update(pb, state == "race" or state == "countdown" or (state == "finished" and finished_timer < 2.5))
 		if bool(pb.get("is_crashed")):
 			cam.shake = maxf(cam.shake, 0.0)
 
@@ -657,6 +660,24 @@ func _update_hud() -> void:
 # ------------------------------------------------------------------ CI: headless race
 func _run_autotest() -> void:
 	var ok := true
+	# audio: loops must be silent outside a race (menu / loading / pause)
+	audio = EngineAudio.new()
+	add_child(audio)
+	audio.setup()
+	var silent_start: bool = audio.is_silent()
+	audio.update({"rpm": 8000.0, "throttle": 1.0, "speed": 30.0, "front_slide": 0.0, "rear_slide": 0.0,
+		"wheelspin": 0.0, "on_ground": true, "is_crashed": false}, false)
+	var silent_inactive: bool = audio.is_silent()
+	audio.update({"rpm": 8000.0, "throttle": 1.0, "speed": 30.0, "front_slide": 0.0, "rear_slide": 0.0,
+		"wheelspin": 0.0, "on_ground": true, "is_crashed": false}, true)
+	var audible_racing: bool = not audio.is_silent()
+	audio.silence()
+	print("AUDIO silent_at_start=%s silent_when_inactive=%s audible_when_racing=%s silent_after_silence=%s" % [
+		silent_start, silent_inactive, audible_racing, audio.is_silent()])
+	if not (silent_start and silent_inactive and audible_racing and audio.is_silent()):
+		ok = false
+	audio.queue_free()
+	audio = null
 	settings["laps"] = 0
 	for ti in TD.DEFS.size():
 		settings["track"] = ti

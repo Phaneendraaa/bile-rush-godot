@@ -63,7 +63,7 @@ static func engine_loop(bright: float, seed: int) -> AudioStreamWAV:
 		# combustion noise shaped by firing phase
 		var nz := rng.randf_range(-1.0, 1.0)
 		lp += (nz - lp) * (0.25 + bright * 0.4)
-		v += lp * (0.35 + bright * 0.5) * (0.55 + 0.45 * cos(ph))
+		v += lp * (0.1 + bright * 0.18) * (0.55 + 0.45 * cos(ph))
 		# soft clip for growl
 		v = tanh(v * (0.9 + bright * 0.6))
 		out[i] = v
@@ -131,10 +131,11 @@ static func crash_sound() -> AudioStreamWAV:
 
 
 func setup() -> void:
-	on_p = _player(engine_loop(0.8, 1), -6.0)
-	off_p = _player(engine_loop(0.15, 2), -10.0)
-	wind_p = _player(noise_loop(900.0, 0.7, "wind"), -40.0)
-	squeal_p = _player(noise_loop(1350.0, 6.0, "squeal"), -60.0)
+	# everything starts silent: volumes are driven by update() only while racing
+	on_p = _player(engine_loop(0.8, 1), -80.0)
+	off_p = _player(engine_loop(0.15, 2), -80.0)
+	wind_p = _player(noise_loop(900.0, 0.7, "wind"), -80.0)
+	squeal_p = _player(noise_loop(1350.0, 6.0, "squeal"), -80.0)
 	fx_p = AudioStreamPlayer.new()
 	add_child(fx_p)
 	for p in [on_p, off_p, wind_p, squeal_p]:
@@ -171,6 +172,20 @@ func update(bike, active: bool) -> void:
 	squeal_p.pitch_scale = 0.9 + randf() * 0.05
 
 
+## Mute all looping sounds (menu, loading, pause, results).
+func silence() -> void:
+	for p in [on_p, off_p, wind_p, squeal_p]:
+		if p != null:
+			p.volume_db = -80.0
+
+
+func is_silent() -> bool:
+	for p in [on_p, off_p, wind_p, squeal_p]:
+		if p != null and p.volume_db > -70.0:
+			return false
+	return true
+
+
 func play_crash() -> void:
 	if muted or fx_p == null:
 		return
@@ -187,7 +202,9 @@ func beep(freq: float, dur: float) -> void:
 	out.resize(n)
 	for i in n:
 		var t := float(i) / RATE
-		out[i] = (1.0 if sin(TAU * freq * t) > 0.0 else -1.0) * 0.25 * minf(1.0, (dur - t) * 30.0)
+		# soft sine chime with a short attack and release (no clicks)
+		var env := minf(1.0, t * 200.0) * minf(1.0, (dur - t) * 25.0)
+		out[i] = (sin(TAU * freq * t) * 0.8 + sin(TAU * freq * 2.0 * t) * 0.2) * 0.35 * env
 	fx_p.stream = _wav(out, false)
 	fx_p.volume_db = -8.0
 	fx_p.play()
