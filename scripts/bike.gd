@@ -192,7 +192,7 @@ func _integrate_forces(st: PhysicsDirectBodyState3D) -> void:
 	if surface == "curb":
 		mu = 0.98; roll_res = 0.03
 	elif surface == "grass":
-		mu = 0.55; roll_res = 0.11
+		mu = 0.72; roll_res = 0.09
 	if is_crashed:
 		mu *= 0.5
 
