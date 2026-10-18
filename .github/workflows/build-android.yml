@@ -1,0 +1,121 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  GODOT_VERSION: 4.7.2
+  GODOT_RELEASE: stable
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Cache Godot + export templates
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE }}-v1
+
+      - name: Download Godot and export templates
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          set -e
+          V="${GODOT_VERSION}-${GODOT_RELEASE}"
+          mkdir -p ~/godot
+          cd ~/godot
+          wget -q "https://github.com/godotengine/godot/releases/download/${V}/Godot_v${V}_linux.x86_64.zip"
+          unzip -q "Godot_v${V}_linux.x86_64.zip"
+          mv "Godot_v${V}_linux.x86_64" godot
+          rm "Godot_v${V}_linux.x86_64.zip"
+          wget -q "https://github.com/godotengine/godot/releases/download/${V}/Godot_v${V}_export_templates.tpz"
+          unzip -q "Godot_v${V}_export_templates.tpz"
+          T=~/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}
+          mkdir -p "$T"
+          # keep only what the Android export needs (the full set is ~1 GB)
+          mv templates/android_* templates/version.txt "$T"/
+          rm -rf templates "Godot_v${V}_export_templates.tpz"
+          ls -la "$T"
+
+      - name: Configure editor settings (Android SDK, JDK)
+        run: |
+          set -e
+          mkdir -p ~/.config/godot
+          SDK="${ANDROID_HOME:-$ANDROID_SDK_ROOT}"
+          echo "Android SDK: $SDK  JDK: $JAVA_HOME"
+          ls "$SDK/build-tools" | tail -3
+          for f in editor_settings-4.tres editor_settings-4.7.tres; do
+          cat > ~/.config/godot/$f <<EOT
+          [gd_resource type="EditorSettings" format=3]
+
+          [resource]
+          export/android/android_sdk_path = "$SDK"
+          export/android/java_sdk_path = "$JAVA_HOME"
+          EOT
+          done
+          cat ~/.config/godot/editor_settings-4.7.tres
+
+      - name: Import project
+        run: |
+          ~/godot/godot --headless --path . --import 2>&1 | tee import.log || true
+          if grep -E "SCRIPT ERROR|Parse Error|Failed to load script" import.log; then echo "::error::Script errors during import"; exit 1; fi
+
+      - name: Gameplay smoke test (headless physics simulation)
+        run: |
+          set -o pipefail
+          timeout 900 ~/godot/godot --headless --path . --fixed-fps 60 -- --autotest 2>&1 | tee autotest.log
+          if grep -E "SCRIPT ERROR|Parse Error|Invalid call|Invalid access|Invalid get|Invalid set|Invalid operands|Nonexistent function|Out of bounds" autotest.log; then echo "::error::Runtime errors in autotest"; exit 1; fi
+          grep -q "AUTOTEST PASS" autotest.log || { echo "::error::Autotest did not pass"; exit 1; }
+
+      - name: Export APK
+        env:
+          GODOT_ANDROID_KEYSTORE_RELEASE_PATH: ${{ github.workspace }}/ci/release.keystore
+          GODOT_ANDROID_KEYSTORE_RELEASE_USER: bikerush
+          GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD: bikerush
+        run: |
+          mkdir -p build
+          ~/godot/godot --headless --path . --export-release "Android" build/BikeRush3D.apk 2>&1 | tee export.log
+          ls -la build/
+          test -s build/BikeRush3D.apk
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs
+          path: |
+            import.log
+            autotest.log
+            export.log
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BikeRush3D-apk
+          path: build/BikeRush3D.apk
+
+      - name: Publish release (direct APK download link)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v1.0.${{ github.run_number }}"
+          gh release create "$TAG" build/BikeRush3D.apk \
+            --title "Bike Rush 3D ${TAG}" \
+            --notes "Built from ${GITHUB_SHA::7}. Download BikeRush3D.apk on your Android phone and open it to install." \
+            --latest
