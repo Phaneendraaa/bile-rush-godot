@@ -1,0 +1,336 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+AUDIO silent_at_start=true silent_when_inactive=true audible_when_racing=true silent_after_silence=true
+TOUCH left at (5.55, 58.45) -> pressed=true released=true
+TOUCH right at (15.05, 58.45) -> pressed=true released=true
+TOUCH gas at (57.95, 57.95) -> pressed=true released=true
+TOUCH brake at (48.7, 58.45) -> pressed=true released=true
+CONTROL no input for 3s: speed=0.25 m/s (must stay ~0, no self-driving)
+CONTROL gas 6s: speed=147.8 km/h gear=3
+CONTROL right held 0.6s at 75 km/h: lean 43.9 deg toward right
+WARNING: Jolt Physics job system exceeded the maximum number of jobs. This should not happen. Please report this. Waiting for jobs to become available...
+     at: CreateJob (modules/jolt_physics/spaces/jolt_job_system.cpp:123)
+CONTROL left held 0.6s at 75 km/h: lean 43.2 deg toward left
+  crash: YOU reason=flipped v=5km/h lean=18° s=234 lat=-11.6
+CONTROL brake 2s: speed=-2.3 km/h
+COCKPIT ok eye=(0.0, 1.56, 0.12)
+TRAFFIC cars=20 two_way=true
+  crash: YOU reason=flipped v=53km/h lean=57° s=1459 lat=-0.5
+TRAFFIC after 40s: rider 2060 m, 0 near misses, 1 crashes, car0 moved 2381 m
+TRACK valley L=3832m minR=122m built in 296ms
+  t=  0s | YOU -9m   0km/h g1 lean  0 | Marco -9m   0km/h g1 lean  0 | Kenji -18m   0km/h g1 lean  0 | Lucas -18m   0km/h g1 lean  0 | Aiden -27m   0km/h g1 lean  0 | Rafa -27m   0km/h g1 lean  0
+  TRACE t=0.26 s=-9 k=0.0001 v=1.4 vt=63.4 steer=-0.03 leanT=-0.3 lean=-0.1 lat=3.00 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=0.50 s=-8 k=0.0001 v=0.9 vt=63.4 steer=-0.02 leanT=-0.2 lean=-0.2 lat=3.00 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=0.76 s=-8 k=0.0001 v=3.2 vt=63.2 steer=-0.12 leanT=-1.0 lean=-0.6 lat=3.00 fs=0.22 rs=0.09 surf=road thr=1.00 brk=0.00
+  TRACE t=1.01 s=-7 k=0.0001 v=5.1 vt=63.1 steer=-0.26 leanT=-2.6 lean=-1.4 lat=2.99 fs=0.00 rs=0.06 surf=road thr=1.00 brk=0.00
+  TRACE t=1.26 s=-5 k=0.0001 v=7.5 vt=62.6 steer=-0.31 leanT=-5.3 lean=-3.3 lat=2.95 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=1.51 s=-3 k=0.0002 v=9.6 vt=62.5 steer=-0.26 leanT=-6.6 lean=-5.7 lat=2.84 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=1.76 s=-1 k=0.0002 v=10.5 vt=62.3 steer=-0.18 leanT=-5.4 lean=-5.7 lat=2.67 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=2.01 s=3 k=0.0004 v=13.1 vt=61.7 steer=-0.09 leanT=-3.8 lean=-5.2 lat=2.38 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=2.26 s=6 k=0.0005 v=14.3 vt=61.1 steer=-0.01 leanT=-0.5 lean=-3.0 lat=2.02 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=2.51 s=10 k=0.0007 v=16.4 vt=60.9 steer=0.07 leanT=3.1 lean=0.1 lat=1.61 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=2.76 s=14 k=0.0006 v=18.0 vt=60.2 steer=0.14 leanT=6.7 lean=3.7 lat=1.18 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=3.01 s=19 k=0.0004 v=19.8 vt=59.5 steer=0.20 leanT=9.7 lean=7.1 lat=0.79 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=3.26 s=24 k=0.0000 v=21.5 vt=58.8 steer=0.26 leanT=12.4 lean=10.1 lat=0.47 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=3.51 s=30 k=-0.0002 v=23.2 vt=58.5 steer=0.31 leanT=14.9 lean=12.9 lat=0.23 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=3.76 s=36 k=-0.0007 v=24.9 vt=57.2 steer=0.35 leanT=16.5 lean=15.2 lat=0.11 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=4.01 s=43 k=-0.0010 v=26.7 vt=56.4 steer=0.34 leanT=16.1 lean=16.2 lat=0.11 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=4.25 s=49 k=-0.0013 v=28.3 vt=55.6 steer=0.25 leanT=12.1 lean=15.0 lat=0.23 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=4.50 s=57 k=-0.0009 v=29.9 vt=54.7 steer=0.15 leanT=7.3 lean=11.2 lat=0.40 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=4.75 s=65 k=-0.0004 v=31.8 vt=53.7 steer=0.12 leanT=5.8 lean=8.0 lat=0.57 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=5.00 s=73 k=-0.0006 v=34.3 vt=52.3 steer=0.09 leanT=4.3 lean=5.6 lat=0.82 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=5.25 s=82 k=-0.0012 v=34.4 vt=51.4 steer=0.12 leanT=5.8 lean=5.2 lat=1.07 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=5.50 s=91 k=-0.0020 v=36.4 vt=49.8 steer=0.21 leanT=10.1 lean=7.0 lat=1.21 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=5.75 s=100 k=-0.0028 v=38.5 vt=48.6 steer=0.35 leanT=16.5 lean=12.4 lat=1.27 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=6.00 s=110 k=-0.0026 v=39.4 vt=47.2 steer=0.45 leanT=21.4 lean=17.6 lat=1.20 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=6.25 s=120 k=-0.0019 v=41.0 vt=45.4 steer=0.66 leanT=31.5 lean=25.3 lat=1.03 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=6.50 s=131 k=-0.0024 v=42.9 vt=43.8 steer=0.77 leanT=36.9 lean=32.8 lat=0.98 fs=0.00 rs=0.00 surf=road thr=0.57 brk=0.00
+  TRACE t=6.75 s=142 k=-0.0030 v=42.8 vt=42.3 steer=0.84 leanT=40.2 lean=38.6 lat=1.04 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=7.00 s=152 k=-0.0039 v=42.1 vt=41.1 steer=0.77 leanT=36.9 lean=39.1 lat=1.24 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.01
+  TRACE t=7.25 s=163 k=-0.0041 v=41.5 vt=41.4 steer=0.68 leanT=32.4 lean=36.1 lat=1.50 fs=0.00 rs=0.00 surf=road thr=0.09 brk=0.00
+  TRACE t=7.50 s=174 k=-0.0035 v=42.6 vt=43.8 steer=0.63 leanT=30.1 lean=32.5 lat=1.73 fs=0.00 rs=0.00 surf=road thr=0.66 brk=0.00
+  TRACE t=7.75 s=184 k=-0.0036 v=42.7 vt=41.8 steer=0.72 leanT=34.2 lean=33.3 lat=1.91 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=8.00 s=195 k=-0.0039 v=41.8 vt=40.1 steer=0.73 leanT=34.9 lean=35.0 lat=2.07 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.16
+  TRACE t=8.25 s=205 k=-0.0043 v=40.6 vt=39.2 steer=0.70 leanT=33.3 lean=35.0 lat=2.25 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.09
+  TRACE t=8.50 s=216 k=-0.0046 v=39.8 vt=38.9 steer=0.65 leanT=31.0 lean=33.4 lat=2.43 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=8.75 s=226 k=-0.0044 v=39.4 vt=39.7 steer=0.62 leanT=29.5 lean=31.9 lat=2.54 fs=0.00 rs=0.00 surf=road thr=0.26 brk=0.00
+  TRACE t=9.00 s=236 k=-0.0042 v=40.2 vt=40.9 steer=0.64 leanT=30.4 lean=31.2 lat=2.59 fs=0.00 rs=0.00 surf=road thr=0.48 brk=0.00
+  TRACE t=9.25 s=246 k=-0.0040 v=41.0 vt=41.6 steer=0.71 leanT=33.7 lean=33.0 lat=2.56 fs=0.00 rs=0.00 surf=road thr=0.39 brk=0.00
+  TRACE t=9.50 s=256 k=-0.0040 v=41.5 vt=41.7 steer=0.76 leanT=36.3 lean=35.9 lat=2.50 fs=0.00 rs=0.00 surf=road thr=0.20 brk=0.00
+  TRACE t=9.75 s=267 k=-0.0040 v=41.0 vt=40.4 steer=0.77 leanT=36.6 lean=37.8 lat=2.47 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=10.00 s=277 k=-0.0043 v=40.4 vt=40.2 steer=0.70 leanT=33.4 lean=36.8 lat=2.50 fs=0.00 rs=0.00 surf=road thr=0.07 brk=0.00
+  t= 10s | YOU 275m 147km/h g3 lean 28 | Marco 277m 145km/h g3 lean 37 | Kenji 264m 146km/h g3 lean 41 | Lucas 266m 145km/h g3 lean 16 | Aiden 264m 144km/h g3 lean 11 | Rafa 256m 143km/h g3 lean 43
+  TRACE t=10.25 s=287 k=-0.0042 v=40.3 vt=40.9 steer=0.61 leanT=29.1 lean=33.7 lat=2.52 fs=0.00 rs=0.00 surf=road thr=0.39 brk=0.00
+  TRACE t=10.50 s=298 k=-0.0037 v=41.7 vt=43.6 steer=0.56 leanT=26.5 lean=29.9 lat=2.51 fs=0.00 rs=0.00 surf=road thr=0.99 brk=0.00
+  TRACE t=10.75 s=308 k=-0.0031 v=43.7 vt=46.9 steer=0.62 leanT=29.6 lean=29.4 lat=2.40 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=11.00 s=320 k=-0.0028 v=45.0 vt=45.1 steer=0.74 leanT=35.2 lean=33.1 lat=2.21 fs=0.00 rs=0.00 surf=road thr=0.17 brk=0.00
+  TRACE t=11.25 s=331 k=-0.0033 v=44.4 vt=44.0 steer=0.73 leanT=34.9 lean=35.9 lat=2.07 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=11.51 s=342 k=-0.0035 v=44.0 vt=44.8 steer=0.62 leanT=29.6 lean=34.0 lat=2.00 fs=0.00 rs=0.00 surf=road thr=0.23 brk=0.00
+  TRACE t=11.76 s=353 k=-0.0028 v=45.5 vt=50.1 steer=0.50 leanT=23.7 lean=28.9 lat=1.93 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=12.01 s=365 k=-0.0020 v=47.4 vt=55.2 steer=0.48 leanT=22.9 lean=25.2 lat=1.79 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=12.26 s=377 k=-0.0014 v=49.2 vt=53.6 steer=0.53 leanT=25.4 lean=25.3 lat=1.60 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=12.51 s=390 k=-0.0022 v=50.0 vt=52.8 steer=0.55 leanT=26.1 lean=26.7 lat=1.45 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=12.76 s=402 k=-0.0020 v=51.4 vt=58.3 steer=0.48 leanT=22.7 lean=25.7 lat=1.24 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=13.01 s=415 k=-0.0010 v=52.9 vt=59.2 steer=0.35 leanT=16.5 lean=21.6 lat=0.98 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=13.26 s=429 k=0.0002 v=54.3 vt=57.5 steer=0.17 leanT=8.3 lean=14.6 lat=0.77 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=13.51 s=442 k=-0.0007 v=55.4 vt=55.8 steer=-0.03 leanT=-1.4 lean=5.1 lat=0.72 fs=0.00 rs=0.00 surf=road thr=0.42 brk=0.00
+  TRACE t=13.76 s=456 k=-0.0006 v=54.7 vt=54.3 steer=-0.23 leanT=-10.8 lean=-4.3 lat=0.55 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=14.01 s=469 k=0.0009 v=53.5 vt=52.4 steer=-0.40 leanT=-18.9 lean=-13.0 lat=0.25 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.04
+  TRACE t=14.26 s=483 k=0.0020 v=52.2 vt=50.5 steer=-0.53 leanT=-25.3 lean=-20.9 lat=-0.01 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.16
+  TRACE t=14.51 s=495 k=0.0013 v=50.7 vt=48.9 steer=-0.60 leanT=-28.4 lean=-26.6 lat=-0.18 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.18
+  TRACE t=14.76 s=508 k=0.0018 v=49.1 vt=47.2 steer=-0.58 leanT=-27.4 lean=-27.8 lat=-0.45 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.20
+  TRACE t=15.01 s=520 k=0.0027 v=47.5 vt=45.5 steer=-0.46 leanT=-21.7 lean=-24.7 lat=-0.80 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.23
+  TRACE t=15.26 s=532 k=0.0034 v=46.5 vt=45.4 steer=-0.19 leanT=-9.3 lean=-13.1 lat=-1.05 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.01
+  TRACE t=15.51 s=543 k=0.0032 v=46.0 vt=46.7 steer=-0.08 leanT=-4.0 lean=-1.7 lat=-1.05 fs=0.00 rs=0.00 surf=road thr=0.47 brk=0.00
+  TRACE t=15.76 s=555 k=0.0029 v=46.9 vt=48.6 steer=-0.66 leanT=-31.5 lean=-12.3 lat=-0.60 fs=0.00 rs=0.00 surf=road thr=0.93 brk=0.00
+  TRACE t=16.01 s=567 k=0.0026 v=47.0 vt=46.9 steer=-0.95 leanT=-45.2 lean=-32.8 lat=0.27 fs=0.37 rs=0.00 surf=road thr=0.08 brk=0.00
+  TRACE t=16.26 s=578 k=0.0032 v=46.5 vt=46.8 steer=-0.88 leanT=-41.8 lean=-40.9 lat=1.24 fs=0.57 rs=0.45 surf=road thr=0.19 brk=0.00
+  TRACE t=16.51 s=590 k=0.0027 v=46.4 vt=50.6 steer=-0.92 leanT=-43.9 lean=-42.5 lat=1.84 fs=0.33 rs=0.31 surf=road thr=0.54 brk=0.00
+  TRACE t=16.76 s=601 k=0.0012 v=46.4 vt=57.5 steer=-0.94 leanT=-44.7 lean=-45.1 lat=2.44 fs=0.31 rs=0.35 surf=road thr=0.50 brk=0.00
+  TRACE t=17.01 s=613 k=0.0004 v=46.5 vt=56.0 steer=-0.63 leanT=-29.8 lean=-38.4 lat=2.50 fs=0.00 rs=0.00 surf=road thr=0.67 brk=0.00
+  TRACE t=17.26 s=625 k=0.0013 v=47.7 vt=54.4 steer=-0.21 leanT=-10.0 lean=-22.2 lat=1.96 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=17.51 s=637 k=0.0002 v=49.2 vt=52.8 steer=0.13 leanT=6.3 lean=-5.6 lat=1.41 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=17.76 s=649 k=-0.0014 v=50.7 vt=51.1 steer=0.17 leanT=8.0 lean=5.6 lat=0.94 fs=0.00 rs=0.00 surf=road thr=0.35 brk=0.00
+  TRACE t=18.01 s=662 k=-0.0014 v=50.4 vt=49.2 steer=0.42 leanT=19.9 lean=11.4 lat=0.40 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=18.26 s=674 k=-0.0009 v=49.5 vt=47.5 steer=0.82 leanT=39.3 lean=27.6 lat=-0.26 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.23
+  TRACE t=18.51 s=687 k=-0.0022 v=47.8 vt=45.7 steer=0.36 leanT=17.3 lean=25.4 lat=-0.26 fs=0.00 rs=0.05 surf=road thr=0.00 brk=0.26
+  TRACE t=18.76 s=698 k=-0.0033 v=46.6 vt=45.5 steer=-0.10 leanT=-4.6 lean=5.7 lat=0.20 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.10
+  TRACE t=19.01 s=710 k=-0.0031 v=46.0 vt=45.1 steer=-0.43 leanT=-20.4 lean=-13.9 lat=0.58 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=19.26 s=721 k=-0.0026 v=45.2 vt=43.2 steer=-0.41 leanT=-19.7 lean=-22.7 lat=0.74 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.22
+  TRACE t=19.51 s=732 k=-0.0034 v=43.8 vt=41.3 steer=-0.40 leanT=-18.9 lean=-24.0 lat=0.70 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.24
+  TRACE t=19.76 s=743 k=-0.0040 v=42.4 vt=40.5 steer=-0.49 leanT=-23.4 lean=-27.3 lat=0.55 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.19
+  TRACE t=20.01 s=753 k=-0.0042 v=41.4 vt=40.7 steer=-0.78 leanT=-37.3 lean=-37.4 lat=0.49 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  t= 20s | YOU 755m 150km/h g4 lean-42 | Marco 753m 149km/h g4 lean-37 | Kenji 732m 156km/h g4 lean-15 | Lucas 735m 153km/h g4 lean -4 | Aiden 729m 155km/h g4 lean-19 | Rafa 717m 159km/h g4 lean-18
+  TRACE t=20.26 s=764 k=-0.0038 v=41.8 vt=42.6 steer=-0.24 leanT=-11.6 lean=-33.9 lat=0.20 fs=0.00 rs=0.00 surf=road thr=0.43 brk=0.00
+  TRACE t=20.51 s=774 k=-0.0039 v=42.0 vt=41.4 steer=0.73 leanT=34.9 lean=4.4 lat=-0.72 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=20.76 s=784 k=-0.0041 v=41.7 vt=40.3 steer=0.98 leanT=46.7 lean=34.2 lat=-1.71 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.08
+  TRACE t=21.01 s=795 k=-0.0043 v=41.1 vt=39.8 steer=1.00 leanT=47.6 lean=45.1 lat=-2.38 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.07
+  TRACE t=21.26 s=805 k=-0.0044 v=40.7 vt=39.9 steer=1.00 leanT=47.7 lean=48.2 lat=-2.83 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=21.51 s=815 k=-0.0042 v=40.6 vt=40.9 steer=1.00 leanT=47.7 lean=49.0 lat=-3.10 fs=0.00 rs=0.00 surf=road thr=0.15 brk=0.00
+  TRACE t=21.76 s=825 k=-0.0039 v=41.0 vt=42.2 steer=1.00 leanT=47.7 lean=49.1 lat=-3.14 fs=0.00 rs=0.00 surf=road thr=0.34 brk=0.00
+  TRACE t=22.01 s=835 k=-0.0037 v=41.7 vt=42.5 steer=1.00 leanT=47.7 lean=49.1 lat=-2.93 fs=0.00 rs=0.00 surf=road thr=0.25 brk=0.00
+  TRACE t=22.26 s=845 k=-0.0038 v=41.8 vt=41.6 steer=1.00 leanT=47.7 lean=49.0 lat=-2.46 fs=0.00 rs=0.00 surf=road thr=0.02 brk=0.00
+  TRACE t=22.51 s=856 k=-0.0040 v=41.6 vt=41.5 steer=0.92 leanT=43.9 lean=48.1 lat=-1.74 fs=0.00 rs=0.00 surf=road thr=0.05 brk=0.00
+  TRACE t=22.76 s=866 k=-0.0037 v=42.0 vt=43.5 steer=0.58 leanT=27.7 lean=39.5 lat=-0.77 fs=0.00 rs=0.00 surf=road thr=0.52 brk=0.00
+  TRACE t=23.01 s=876 k=-0.0031 v=43.7 vt=47.2 steer=0.13 leanT=6.3 lean=21.7 lat=0.36 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=23.26 s=888 k=-0.0029 v=45.4 vt=46.2 steer=-0.10 leanT=-4.8 lean=4.1 lat=1.33 fs=0.00 rs=0.00 surf=road thr=0.50 brk=0.00
+  TRACE t=23.51 s=899 k=-0.0033 v=45.9 vt=46.1 steer=-0.17 leanT=-8.2 lean=-5.1 lat=1.91 fs=0.00 rs=0.00 surf=road thr=0.24 brk=0.00
+  TRACE t=23.76 s=911 k=-0.0030 v=46.4 vt=48.2 steer=-0.02 leanT=-0.9 lean=-5.3 lat=1.93 fs=0.00 rs=0.00 surf=road thr=0.98 brk=0.00
+  TRACE t=24.01 s=923 k=-0.0024 v=48.2 vt=53.4 steer=0.38 leanT=18.2 lean=6.4 lat=1.43 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=24.26 s=935 k=-0.0022 v=50.0 vt=52.7 steer=0.76 leanT=36.1 lean=24.8 lat=0.63 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=24.51 s=948 k=-0.0025 v=51.5 vt=52.7 steer=0.94 leanT=44.9 lean=39.1 lat=-0.13 fs=0.00 rs=0.00 surf=road thr=0.47 brk=0.00
+  TRACE t=24.76 s=960 k=-0.0022 v=52.0 vt=55.9 steer=0.99 leanT=47.3 lean=46.1 lat=-0.72 fs=0.00 rs=0.00 surf=road thr=0.50 brk=0.00
+  TRACE t=25.01 s=974 k=-0.0019 v=52.7 vt=60.3 steer=1.00 leanT=47.5 lean=48.6 lat=-1.01 fs=0.00 rs=0.00 surf=road thr=0.50 brk=0.00
+  TRACE t=25.26 s=987 k=-0.0019 v=53.3 vt=59.2 steer=0.90 leanT=42.8 lean=47.3 lat=-0.91 fs=0.00 rs=0.00 surf=road thr=0.50 brk=0.00
+  TRACE t=25.51 s=1000 k=-0.0020 v=53.9 vt=59.4 steer=0.68 leanT=32.2 lean=40.5 lat=-0.49 fs=0.00 rs=0.00 surf=road thr=0.59 brk=0.00
+  TRACE t=25.76 s=1014 k=-0.0019 v=55.1 vt=61.1 steer=0.39 leanT=18.7 lean=28.8 lat=0.09 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=26.01 s=1028 k=-0.0018 v=56.6 vt=61.4 steer=0.27 leanT=13.0 lean=18.1 lat=0.62 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=26.26 s=1042 k=-0.0019 v=58.0 vt=60.1 steer=0.43 leanT=20.5 lean=17.3 lat=0.90 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=26.51 s=1057 k=-0.0019 v=58.3 vt=59.1 steer=0.65 leanT=31.1 lean=26.0 lat=0.92 fs=0.00 rs=0.00 surf=road thr=0.49 brk=0.00
+  TRACE t=26.76 s=1071 k=-0.0020 v=58.3 vt=58.9 steer=0.58 leanT=27.8 lean=29.9 lat=0.91 fs=0.00 rs=0.00 surf=road thr=0.38 brk=0.00
+  TRACE t=27.01 s=1086 k=-0.0020 v=58.3 vt=58.9 steer=0.46 leanT=21.8 lean=26.2 lat=0.90 fs=0.00 rs=0.00 surf=road thr=0.44 brk=0.00
+  TRACE t=27.26 s=1100 k=-0.0020 v=57.8 vt=57.4 steer=0.48 leanT=22.8 lean=23.4 lat=0.71 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=27.51 s=1115 k=-0.0021 v=56.7 vt=56.4 steer=0.58 leanT=27.8 lean=25.8 lat=0.32 fs=0.00 rs=0.00 surf=road thr=0.01 brk=0.00
+  TRACE t=27.76 s=1129 k=-0.0022 v=56.1 vt=56.7 steer=0.69 leanT=32.9 lean=30.3 lat=-0.20 fs=0.00 rs=0.00 surf=road thr=0.41 brk=0.00
+  TRACE t=28.01 s=1143 k=-0.0018 v=56.7 vt=60.4 steer=0.93 leanT=44.1 lean=38.3 lat=-0.81 fs=0.00 rs=0.00 surf=road thr=0.70 brk=0.00
+  TRACE t=28.26 s=1157 k=-0.0016 v=57.0 vt=58.9 steer=0.99 leanT=47.4 lean=45.8 lat=-1.34 fs=0.00 rs=0.00 surf=road thr=0.50 brk=0.00
+  TRACE t=28.51 s=1171 k=-0.0020 v=57.2 vt=59.1 steer=1.00 leanT=47.6 lean=48.1 lat=-1.60 fs=0.00 rs=0.00 surf=road thr=0.50 brk=0.00
+  TRACE t=28.76 s=1185 k=-0.0012 v=57.3 vt=63.1 steer=0.86 leanT=40.8 lean=46.5 lat=-1.68 fs=0.00 rs=0.00 surf=road thr=0.50 brk=0.00
+  TRACE t=29.01 s=1200 k=-0.0005 v=57.6 vt=61.4 steer=0.43 leanT=20.7 lean=34.4 lat=-1.37 fs=0.00 rs=0.00 surf=road thr=0.83 brk=0.00
+  TRACE t=29.26 s=1214 k=-0.0011 v=58.6 vt=59.6 steer=-0.17 leanT=-7.9 lean=10.1 lat=-0.74 fs=0.00 rs=0.00 surf=road thr=0.62 brk=0.00
+  TRACE t=29.51 s=1229 k=0.0001 v=58.3 vt=57.9 steer=-0.35 leanT=-16.9 lean=-9.1 lat=-0.35 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=29.76 s=1243 k=0.0011 v=57.2 vt=56.0 steer=-0.38 leanT=-18.3 lean=-16.1 lat=-0.13 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.06
+  TRACE t=30.01 s=1257 k=0.0004 v=56.0 vt=54.6 steer=-0.47 leanT=-22.6 lean=-20.3 lat=0.14 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.10
+  t= 30s | YOU 1272m 198km/h g5 lean-31 | Marco 1257m 202km/h g5 lean-20 | Kenji 1226m 210km/h g5 lean-14 | Lucas 1224m 208km/h g4 lean-32 | Aiden 1216m 208km/h g4 lean  6 | Rafa 1193m 205km/h g4 lean  6
+  TRACE t=30.26 s=1271 k=0.0015 v=54.5 vt=52.9 steer=-0.57 leanT=-27.1 lean=-24.3 lat=0.32 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.14
+  TRACE t=30.51 s=1285 k=0.0025 v=53.4 vt=52.4 steer=-0.63 leanT=-30.3 lean=-27.8 lat=0.52 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=30.76 s=1298 k=0.0019 v=53.5 vt=54.4 steer=-0.85 leanT=-40.7 lean=-34.5 lat=0.88 fs=0.00 rs=0.00 surf=road thr=0.59 brk=0.00
+  TRACE t=31.01 s=1311 k=0.0022 v=53.2 vt=52.8 steer=-0.99 leanT=-47.1 lean=-43.7 lat=1.22 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=31.26 s=1325 k=0.0025 v=52.4 vt=52.0 steer=-1.00 leanT=-47.6 lean=-47.1 lat=1.35 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=31.51 s=1338 k=0.0025 v=52.0 vt=52.4 steer=-0.88 leanT=-42.1 lean=-45.8 lat=1.28 fs=0.00 rs=0.00 surf=road thr=0.17 brk=0.00
+  TRACE t=31.76 s=1351 k=0.0020 v=52.3 vt=58.3 steer=-0.67 leanT=-31.9 lean=-38.8 lat=1.00 fs=0.00 rs=0.00 surf=road thr=0.65 brk=0.00
+  TRACE t=32.01 s=1364 k=0.0015 v=53.4 vt=67.8 steer=-0.46 leanT=-22.2 lean=-29.5 lat=0.62 fs=0.00 rs=0.00 surf=road thr=0.99 brk=0.00
+  TRACE t=32.26 s=1377 k=0.0011 v=54.9 vt=66.9 steer=-0.28 leanT=-13.3 lean=-20.2 lat=0.22 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=32.51 s=1391 k=0.0016 v=56.3 vt=66.5 steer=-0.11 leanT=-5.0 lean=-11.0 lat=-0.13 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=32.76 s=1405 k=0.0008 v=57.7 vt=67.8 steer=0.02 leanT=1.1 lean=-3.6 lat=-0.25 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=33.01 s=1420 k=-0.0002 v=59.1 vt=65.9 steer=0.09 leanT=4.3 lean=1.5 lat=-0.22 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=33.26 s=1435 k=-0.0005 v=60.5 vt=64.5 steer=0.15 leanT=7.0 lean=5.0 lat=-0.19 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=33.51 s=1450 k=0.0004 v=61.8 vt=62.6 steer=0.28 leanT=13.4 lean=9.5 lat=-0.20 fs=0.00 rs=0.00 surf=road thr=0.68 brk=0.00
+  TRACE t=33.76 s=1466 k=-0.0004 v=61.6 vt=61.2 steer=0.49 leanT=23.5 lean=17.7 lat=-0.05 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=34.01 s=1481 k=-0.0013 v=60.6 vt=59.1 steer=0.57 leanT=27.2 lean=24.6 lat=0.21 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.11
+  TRACE t=34.26 s=1496 k=-0.0017 v=59.2 vt=57.7 steer=0.55 leanT=26.0 lean=26.8 lat=0.50 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.13
+  TRACE t=34.51 s=1510 k=-0.0007 v=57.7 vt=55.6 steer=0.49 leanT=23.3 lean=25.7 lat=0.77 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.25
+  TRACE t=34.76 s=1525 k=-0.0011 v=56.0 vt=54.0 steer=0.50 leanT=23.8 lean=24.3 lat=1.16 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.23
+  TRACE t=35.01 s=1538 k=-0.0018 v=54.3 vt=52.2 steer=0.56 leanT=26.7 lean=25.7 lat=1.55 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.25
+  TRACE t=35.26 s=1552 k=-0.0024 v=52.7 vt=51.2 steer=0.36 leanT=17.3 lean=24.3 lat=1.93 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.06
+  TRACE t=35.51 s=1565 k=-0.0026 v=51.8 vt=51.9 steer=0.00 leanT=0.1 lean=11.2 lat=2.23 fs=0.00 rs=0.00 surf=road thr=0.19 brk=0.00
+  TRACE t=35.76 s=1578 k=-0.0017 v=51.1 vt=49.9 steer=-0.04 leanT=-1.8 lean=1.0 lat=2.13 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=36.01 s=1591 k=-0.0020 v=50.0 vt=48.2 steer=0.28 leanT=13.2 lean=4.8 lat=1.64 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.19
+  TRACE t=36.26 s=1603 k=-0.0024 v=48.5 vt=46.5 steer=0.64 leanT=30.3 lean=19.3 lat=0.89 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.24
+  TRACE t=36.51 s=1615 k=-0.0029 v=46.9 vt=44.7 steer=0.84 leanT=39.9 lean=33.0 lat=0.16 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.27
+  TRACE t=36.76 s=1626 k=-0.0035 v=45.6 vt=44.6 steer=0.90 leanT=42.9 lean=40.9 lat=-0.41 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=37.01 s=1638 k=-0.0033 v=45.0 vt=45.7 steer=0.89 leanT=42.4 lean=44.0 lat=-0.83 fs=0.00 rs=0.00 surf=road thr=0.25 brk=0.00
+  TRACE t=37.26 s=1649 k=-0.0029 v=45.2 vt=45.9 steer=0.84 leanT=39.8 lean=43.1 lat=-1.08 fs=0.00 rs=0.00 surf=road thr=0.24 brk=0.00
+  TRACE t=37.51 s=1660 k=-0.0031 v=44.7 vt=44.0 steer=0.85 leanT=40.6 lean=41.6 lat=-1.15 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=37.76 s=1671 k=-0.0034 v=43.8 vt=42.4 steer=0.95 leanT=45.3 lean=44.2 lat=-1.14 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.11
+  TRACE t=38.01 s=1682 k=-0.0038 v=42.5 vt=40.4 steer=0.97 leanT=46.1 lean=46.9 lat=-0.94 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.17
+  TRACE t=38.26 s=1692 k=-0.0043 v=41.1 vt=39.8 steer=0.83 leanT=39.3 lean=45.5 lat=-0.52 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.08
+  TRACE t=38.51 s=1702 k=-0.0044 v=40.3 vt=39.9 steer=0.52 leanT=24.6 lean=35.9 lat=0.05 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=38.76 s=1713 k=-0.0041 v=40.2 vt=41.1 steer=0.27 leanT=12.9 lean=22.9 lat=0.53 fs=0.00 rs=0.00 surf=road thr=0.57 brk=0.00
+  TRACE t=39.01 s=1723 k=-0.0041 v=40.5 vt=40.9 steer=0.27 leanT=12.8 lean=14.9 lat=0.76 fs=0.00 rs=0.00 surf=road thr=0.36 brk=0.00
+  TRACE t=39.26 s=1733 k=-0.0042 v=40.3 vt=40.2 steer=0.49 leanT=23.4 lean=18.1 lat=0.65 fs=0.00 rs=0.00 surf=road thr=0.09 brk=0.00
+  TRACE t=39.51 s=1743 k=-0.0044 v=39.7 vt=39.2 steer=0.71 leanT=34.0 lean=27.6 lat=0.31 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=39.76 s=1752 k=-0.0046 v=38.9 vt=38.1 steer=0.84 leanT=39.9 lean=36.2 lat=-0.08 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=40.01 s=1762 k=-0.0049 v=38.2 vt=37.4 steer=0.88 leanT=42.0 lean=41.1 lat=-0.43 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  t= 40s | YOU 1778m 135km/h g4 lean 35 | Marco 1762m 137km/h g4 lean 41 | Kenji 1739m 142km/h g5 lean 41 | Lucas 1733m 142km/h g5 lean 32 | Aiden 1724m 141km/h g5 lean 22 | Rafa 1704m 139km/h g4 lean 20
+  TRACE t=40.26 s=1771 k=-0.0050 v=37.4 vt=37.3 steer=0.85 leanT=40.7 lean=42.4 lat=-0.68 fs=0.00 rs=0.00 surf=road thr=0.04 brk=0.00
+  TRACE t=40.51 s=1781 k=-0.0049 v=37.1 vt=37.6 steer=0.86 leanT=40.9 lean=41.6 lat=-0.86 fs=0.00 rs=0.00 surf=road thr=0.21 brk=0.00
+  TRACE t=40.76 s=1790 k=-0.0047 v=37.2 vt=38.5 steer=0.93 leanT=44.5 lean=43.6 lat=-0.99 fs=0.00 rs=0.00 surf=road thr=0.34 brk=0.00
+  TRACE t=41.01 s=1799 k=-0.0046 v=37.6 vt=39.1 steer=0.97 leanT=46.4 lean=46.2 lat=-1.01 fs=0.00 rs=0.00 surf=road thr=0.43 brk=0.00
+  TRACE t=41.26 s=1809 k=-0.0044 v=38.0 vt=39.7 steer=0.96 leanT=45.5 lean=47.1 lat=-0.85 fs=0.00 rs=0.00 surf=road thr=0.46 brk=0.00
+  TRACE t=41.51 s=1818 k=-0.0043 v=38.4 vt=39.2 steer=0.75 leanT=35.7 lean=43.0 lat=-0.48 fs=0.00 rs=0.00 surf=road thr=0.25 brk=0.00
+  TRACE t=41.76 s=1828 k=-0.0045 v=38.3 vt=38.1 steer=0.46 leanT=22.0 lean=32.0 lat=0.00 fs=0.00 rs=0.00 surf=road thr=0.07 brk=0.00
+  TRACE t=42.01 s=1837 k=-0.0049 v=37.8 vt=37.7 steer=0.27 leanT=12.7 lean=20.1 lat=0.39 fs=0.00 rs=0.00 surf=road thr=0.11 brk=0.00
+  TRACE t=42.26 s=1847 k=-0.0047 v=37.8 vt=38.4 steer=0.45 leanT=21.3 lean=17.4 lat=0.44 fs=0.00 rs=0.00 surf=road thr=0.42 brk=0.00
+  TRACE t=42.51 s=1856 k=-0.0042 v=38.8 vt=40.5 steer=0.78 leanT=37.1 lean=27.9 lat=0.17 fs=0.00 rs=0.00 surf=road thr=0.94 brk=0.00
+  TRACE t=42.76 s=1866 k=-0.0038 v=40.0 vt=42.7 steer=0.98 leanT=46.5 lean=40.8 lat=-0.20 fs=0.00 rs=0.00 surf=road thr=0.60 brk=0.00
+  TRACE t=43.01 s=1876 k=-0.0034 v=40.9 vt=44.0 steer=1.00 leanT=47.6 lean=46.8 lat=-0.46 fs=0.00 rs=0.00 surf=road thr=0.50 brk=0.00
+  TRACE t=43.26 s=1887 k=-0.0032 v=41.4 vt=42.5 steer=0.96 leanT=45.7 lean=47.9 lat=-0.52 fs=0.00 rs=0.00 surf=road thr=0.33 brk=0.00
+  TRACE t=43.51 s=1897 k=-0.0038 v=41.6 vt=41.6 steer=0.70 leanT=33.6 lean=41.5 lat=-0.31 fs=0.00 rs=0.00 surf=road thr=0.08 brk=0.00
+  TRACE t=43.76 s=1907 k=-0.0040 v=41.6 vt=41.7 steer=0.57 leanT=27.3 lean=32.7 lat=-0.06 fs=0.00 rs=0.00 surf=road thr=0.19 brk=0.00
+  TRACE t=44.01 s=1918 k=-0.0034 v=42.7 vt=45.5 steer=0.58 leanT=27.6 lean=28.5 lat=0.06 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=44.26 s=1929 k=-0.0028 v=44.4 vt=49.5 steer=0.72 leanT=34.1 lean=31.4 lat=0.04 fs=0.00 rs=0.00 surf=road thr=0.97 brk=0.00
+  TRACE t=44.51 s=1940 k=-0.0023 v=46.0 vt=51.5 steer=0.80 leanT=38.3 lean=36.4 lat=-0.02 fs=0.00 rs=0.00 surf=road thr=0.78 brk=0.00
+  TRACE t=44.76 s=1952 k=-0.0020 v=47.4 vt=49.9 steer=0.80 leanT=38.2 lean=39.0 lat=0.03 fs=0.00 rs=0.00 surf=road thr=0.66 brk=0.00
+  TRACE t=45.01 s=1964 k=-0.0027 v=48.3 vt=49.1 steer=0.71 leanT=33.7 lean=37.1 lat=0.28 fs=0.00 rs=0.00 surf=road thr=0.36 brk=0.00
+  TRACE t=45.26 s=1976 k=-0.0027 v=49.1 vt=50.6 steer=0.52 leanT=25.0 lean=31.5 lat=0.56 fs=0.00 rs=0.00 surf=road thr=0.83 brk=0.00
+  TRACE t=45.51 s=1988 k=-0.0020 v=51.0 vt=58.7 steer=0.35 leanT=16.9 lean=23.1 lat=0.80 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=45.76 s=2001 k=-0.0014 v=52.9 vt=64.9 steer=0.31 leanT=14.9 lean=17.5 lat=0.93 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=46.01 s=2015 k=-0.0010 v=54.8 vt=63.2 steer=0.38 leanT=18.1 lean=17.3 lat=0.96 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=46.26 s=2029 k=-0.0017 v=56.6 vt=63.0 steer=0.46 leanT=22.0 lean=20.1 lat=0.98 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=46.51 s=2043 k=-0.0015 v=58.3 vt=68.0 steer=0.47 leanT=22.3 lean=22.7 lat=0.90 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=46.76 s=2058 k=-0.0010 v=59.1 vt=71.3 steer=0.39 leanT=18.4 lean=21.8 lat=0.81 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=47.01 s=2073 k=-0.0004 v=60.4 vt=69.7 steer=0.27 leanT=13.0 lean=17.2 lat=0.79 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=47.26 s=2088 k=-0.0007 v=61.8 vt=68.1 steer=0.21 leanT=10.2 lean=12.6 lat=0.84 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=47.51 s=2103 k=-0.0008 v=63.0 vt=66.5 steer=0.24 leanT=11.4 lean=11.3 lat=0.82 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=47.76 s=2119 k=-0.0007 v=64.0 vt=64.9 steer=0.44 leanT=21.0 lean=16.0 lat=0.67 fs=0.00 rs=0.00 surf=road thr=0.55 brk=0.00
+  TRACE t=48.01 s=2135 k=-0.0005 v=63.6 vt=63.0 steer=0.58 leanT=27.5 lean=24.1 lat=0.52 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=48.26 s=2151 k=-0.0004 v=62.5 vt=61.3 steer=0.56 leanT=26.8 lean=27.3 lat=0.58 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.05
+  TRACE t=48.51 s=2167 k=-0.0008 v=61.1 vt=59.6 steer=0.48 leanT=22.8 lean=25.8 lat=0.87 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.12
+  TRACE t=48.76 s=2182 k=-0.0011 v=59.6 vt=57.8 steer=0.34 leanT=16.3 lean=20.7 lat=1.26 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.18
+  TRACE t=49.01 s=2196 k=-0.0012 v=57.9 vt=56.1 steer=0.25 leanT=11.9 lean=15.1 lat=1.59 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.20
+  TRACE t=49.26 s=2211 k=-0.0008 v=56.3 vt=54.2 steer=0.26 leanT=12.5 lean=12.5 lat=1.81 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.25
+  TRACE t=49.51 s=2225 k=-0.0015 v=54.5 vt=52.4 steer=0.28 leanT=13.5 lean=12.9 lat=2.02 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.27
+  TRACE t=49.76 s=2238 k=-0.0022 v=52.8 vt=50.7 steer=-0.18 leanT=-8.4 lean=2.4 lat=2.32 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.23
+  TRACE t=50.01 s=2251 k=-0.0026 v=51.1 vt=49.1 steer=-0.48 leanT=-23.1 lean=-15.5 lat=2.44 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.23
+  t= 50s | YOU 2277m 172km/h g5 lean-16 | Marco 2251m 184km/h g5 lean-16 | Kenji 2216m 199km/h g5 lean 19 | Lucas 2202m 204km/h g5 lean 20 | Aiden 2186m 209km/h g5 lean 19 | Rafa 2150m 221km/h g5 lean  6
+  TRACE t=50.26 s=2264 k=-0.0019 v=49.3 vt=47.4 steer=-0.52 leanT=-24.8 lean=-25.7 lat=2.14 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.21
+  TRACE t=50.51 s=2276 k=-0.0023 v=47.6 vt=45.2 steer=-0.37 leanT=-17.8 lean=-26.4 lat=1.61 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.21
+  TRACE t=50.76 s=2288 k=-0.0029 v=45.7 vt=43.9 steer=-0.26 leanT=-12.4 lean=-21.7 lat=0.99 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.20
+  TRACE t=51.01 s=2299 k=-0.0036 v=44.2 vt=42.9 steer=-0.31 leanT=-14.6 lean=-21.4 lat=0.46 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.09
+  TRACE t=51.26 s=2310 k=-0.0036 v=43.5 vt=44.0 steer=0.14 leanT=6.7 lean=-14.2 lat=-0.12 fs=0.00 rs=0.00 surf=road thr=0.07 brk=0.00
+  TRACE t=51.51 s=2321 k=-0.0031 v=44.3 vt=44.4 steer=0.89 leanT=42.6 lean=19.6 lat=-1.03 fs=0.00 rs=0.00 surf=road thr=0.19 brk=0.00
+  TRACE t=51.76 s=2332 k=-0.0034 v=43.7 vt=42.4 steer=0.99 leanT=47.3 lean=40.8 lat=-1.82 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.01
+  TRACE t=52.01 s=2342 k=-0.0038 v=42.7 vt=40.8 steer=1.00 leanT=47.6 lean=47.4 lat=-2.32 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.22
+  TRACE t=52.26 s=2353 k=-0.0042 v=41.5 vt=40.0 steer=1.00 leanT=47.7 lean=49.0 lat=-2.62 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.11
+  TRACE t=52.51 s=2363 k=-0.0044 v=40.8 vt=39.9 steer=1.00 leanT=47.7 lean=49.3 lat=-2.76 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=52.76 s=2373 k=-0.0040 v=40.5 vt=41.5 steer=1.00 leanT=47.7 lean=49.3 lat=-2.72 fs=0.00 rs=0.00 surf=road thr=0.31 brk=0.00
+  TRACE t=53.01 s=2383 k=-0.0039 v=41.0 vt=42.5 steer=1.00 leanT=47.7 lean=49.2 lat=-2.42 fs=0.00 rs=0.00 surf=road thr=0.42 brk=0.00
+  TRACE t=53.26 s=2393 k=-0.0039 v=41.4 vt=42.3 steer=1.00 leanT=47.7 lean=49.2 lat=-1.87 fs=0.00 rs=0.00 surf=road thr=0.29 brk=0.00
+  TRACE t=53.51 s=2404 k=-0.0039 v=41.5 vt=41.7 steer=0.90 leanT=42.7 lean=47.7 lat=-1.08 fs=0.00 rs=0.00 surf=road thr=0.15 brk=0.00
+  TRACE t=53.76 s=2414 k=-0.0040 v=41.3 vt=41.1 steer=0.47 leanT=22.2 lean=37.2 lat=-0.02 fs=0.00 rs=0.00 surf=road thr=0.05 brk=0.00
+  TRACE t=54.01 s=2424 k=-0.0042 v=41.1 vt=41.0 steer=-0.03 leanT=-1.6 lean=14.9 lat=1.06 fs=0.00 rs=0.00 surf=road thr=0.11 brk=0.00
+  TRACE t=54.26 s=2435 k=-0.0040 v=41.1 vt=41.8 steer=-0.02 leanT=-0.7 lean=1.5 lat=1.70 fs=0.00 rs=0.00 surf=road thr=0.45 brk=0.00
+  TRACE t=54.51 s=2445 k=-0.0037 v=42.0 vt=43.5 steer=0.36 leanT=17.2 lean=7.1 lat=1.81 fs=0.00 rs=0.00 surf=road thr=0.84 brk=0.00
+  TRACE t=54.76 s=2456 k=-0.0034 v=43.5 vt=45.4 steer=0.75 leanT=35.9 lean=24.4 lat=1.54 fs=0.00 rs=0.00 surf=road thr=0.90 brk=0.00
+  TRACE t=55.01 s=2467 k=-0.0032 v=44.7 vt=45.3 steer=0.83 leanT=39.4 lean=36.5 lat=1.22 fs=0.00 rs=0.00 surf=road thr=0.33 brk=0.00
+  TRACE t=55.26 s=2478 k=-0.0033 v=44.3 vt=43.9 steer=0.73 leanT=35.0 lean=38.2 lat=1.00 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=55.51 s=2489 k=-0.0036 v=43.8 vt=43.7 steer=0.65 leanT=31.1 lean=34.2 lat=0.84 fs=0.00 rs=0.00 surf=road thr=0.09 brk=0.00
+  TRACE t=55.76 s=2500 k=-0.0033 v=44.2 vt=46.2 steer=0.74 leanT=35.1 lean=34.3 lat=0.56 fs=0.00 rs=0.00 surf=road thr=0.87 brk=0.00
+  TRACE t=56.01 s=2511 k=-0.0028 v=45.4 vt=49.8 steer=0.87 leanT=41.4 lean=38.8 lat=0.22 fs=0.00 rs=0.00 surf=road thr=0.68 brk=0.00
+  TRACE t=56.26 s=2523 k=-0.0024 v=46.2 vt=50.6 steer=0.92 leanT=43.9 lean=43.3 lat=-0.03 fs=0.00 rs=0.00 surf=road thr=0.52 brk=0.00
+  TRACE t=56.51 s=2535 k=-0.0022 v=46.9 vt=48.9 steer=0.86 leanT=41.2 lean=43.8 lat=-0.05 fs=0.00 rs=0.00 surf=road thr=0.51 brk=0.00
+  TRACE t=56.76 s=2546 k=-0.0029 v=47.3 vt=48.5 steer=0.71 leanT=34.0 lean=39.5 lat=0.18 fs=0.00 rs=0.00 surf=road thr=0.43 brk=0.00
+  TRACE t=57.01 s=2558 k=-0.0027 v=48.0 vt=51.1 steer=0.51 leanT=24.4 lean=31.8 lat=0.45 fs=0.00 rs=0.00 surf=road thr=0.94 brk=0.00
+  TRACE t=57.26 s=2571 k=-0.0020 v=49.7 vt=56.8 steer=0.38 leanT=18.3 lean=23.5 lat=0.66 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=57.51 s=2583 k=-0.0013 v=51.4 vt=55.3 steer=0.39 leanT=18.7 lean=19.9 lat=0.75 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=57.76 s=2596 k=-0.0013 v=52.9 vt=53.5 steer=0.61 leanT=28.8 lean=23.8 lat=0.75 fs=0.00 rs=0.00 surf=road thr=0.43 brk=0.00
+  TRACE t=58.01 s=2610 k=-0.0022 v=52.5 vt=51.9 steer=0.68 leanT=32.5 lean=30.8 lat=0.74 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=58.26 s=2623 k=-0.0013 v=51.5 vt=50.0 steer=0.49 leanT=23.4 lean=29.3 lat=0.80 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.12
+  TRACE t=58.51 s=2635 k=-0.0003 v=50.1 vt=48.3 steer=0.20 leanT=9.6 lean=19.4 lat=1.02 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.19
+  TRACE t=58.76 s=2648 k=0.0003 v=48.6 vt=46.6 steer=-0.11 leanT=-5.0 lean=5.5 lat=1.38 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.23
+  TRACE t=59.01 s=2660 k=-0.0007 v=47.0 vt=44.9 steer=-0.54 leanT=-25.5 lean=-12.7 lat=1.84 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.26
+  TRACE t=59.26 s=2671 k=0.0000 v=45.3 vt=43.0 steer=-0.78 leanT=-37.1 lean=-28.9 lat=1.99 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.29
+  TRACE t=59.51 s=2682 k=0.0017 v=43.5 vt=41.1 steer=-0.85 leanT=-40.4 lean=-37.6 lat=1.77 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.33
+  TRACE t=59.76 s=2693 k=0.0026 v=41.8 vt=39.4 steer=-0.82 leanT=-38.9 lean=-40.2 lat=1.31 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.32
+  TRACE t=60.01 s=2703 k=0.0021 v=40.1 vt=37.6 steer=-0.72 leanT=-34.4 lean=-38.4 lat=0.72 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.34
+  t= 60s | YOU 2726m 130km/h g3 lean-39 | Marco 2703m 144km/h g3 lean-38 | Kenji 2674m 160km/h g4 lean-26 | Lucas 2656m 169km/h g4 lean -8 | Aiden 2639m 176km/h g4 lean 18 | Rafa 2606m 186km/h g4 lean 30
+  TRACE t=60.26 s=2713 k=0.0029 v=38.3 vt=35.9 steer=-0.62 leanT=-29.4 lean=-33.4 lat=-0.12 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.34
+  TRACE t=60.51 s=2722 k=0.0047 v=36.6 vt=34.0 steer=-0.52 leanT=-24.9 lean=-28.0 lat=-1.02 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.37
+  TRACE t=60.76 s=2731 k=0.0060 v=35.1 vt=33.2 steer=-0.44 leanT=-20.9 lean=-23.0 lat=-1.88 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.21
+  TRACE t=61.01 s=2740 k=0.0064 v=34.0 vt=32.0 steer=-0.43 leanT=-20.7 lean=-20.4 lat=-2.59 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.16
+  TRACE t=61.26 s=2748 k=0.0069 v=32.9 vt=30.9 steer=-0.46 leanT=-21.9 lean=-20.7 lat=-3.16 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.21
+  TRACE t=61.51 s=2757 k=0.0074 v=31.8 vt=30.0 steer=-0.46 leanT=-22.0 lean=-21.2 lat=-3.59 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.18
+  TRACE t=61.76 s=2765 k=0.0079 v=30.8 vt=29.2 steer=-0.50 leanT=-23.7 lean=-22.5 lat=-3.85 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.14
+  TRACE t=62.01 s=2773 k=0.0082 v=30.2 vt=29.2 steer=-0.53 leanT=-25.5 lean=-24.7 lat=-3.94 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.01
+  TRACE t=62.26 s=2780 k=0.0076 v=30.0 vt=30.3 steer=-0.56 leanT=-26.6 lean=-27.1 lat=-3.85 fs=0.00 rs=0.00 surf=road thr=0.33 brk=0.00
+  TRACE t=62.51 s=2788 k=0.0061 v=31.3 vt=33.8 steer=-0.55 leanT=-26.2 lean=-27.9 lat=-3.63 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=62.76 s=2796 k=0.0052 v=33.4 vt=36.3 steer=-0.59 leanT=-28.2 lean=-28.2 lat=-3.32 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=63.01 s=2805 k=0.0053 v=35.2 vt=36.1 steer=-0.67 leanT=-31.8 lean=-30.6 lat=-2.93 fs=0.00 rs=0.00 surf=road thr=0.57 brk=0.00
+  TRACE t=63.26 s=2814 k=0.0043 v=36.6 vt=40.2 steer=-0.66 leanT=-31.5 lean=-33.0 lat=-2.45 fs=0.00 rs=0.00 surf=road thr=0.91 brk=0.00
+  TRACE t=63.51 s=2824 k=0.0023 v=38.5 vt=55.2 steer=-0.58 leanT=-27.6 lean=-31.8 lat=-1.99 fs=0.00 rs=0.00 surf=road thr=0.95 brk=0.00
+  TRACE t=63.76 s=2834 k=0.0017 v=40.5 vt=58.5 steer=-0.47 leanT=-22.3 lean=-27.0 lat=-1.64 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=64.01 s=2844 k=0.0021 v=42.7 vt=58.2 steer=-0.37 leanT=-17.4 lean=-21.7 lat=-1.40 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=64.26 s=2855 k=0.0011 v=44.9 vt=79.3 steer=-0.25 leanT=-11.8 lean=-16.8 lat=-1.10 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=64.51 s=2867 k=-0.0001 v=47.1 vt=79.4 steer=-0.12 leanT=-5.6 lean=-10.8 lat=-0.83 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=64.76 s=2879 k=0.0001 v=49.2 vt=78.2 steer=-0.00 leanT=-0.0 lean=-4.2 lat=-0.67 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=65.01 s=2891 k=0.0001 v=50.3 vt=77.1 steer=0.09 leanT=4.1 lean=0.9 lat=-0.49 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=65.26 s=2904 k=-0.0007 v=51.9 vt=75.9 steer=0.16 leanT=7.8 lean=5.1 lat=-0.27 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=65.51 s=2917 k=-0.0010 v=53.6 vt=74.7 steer=0.23 leanT=10.8 lean=8.8 lat=-0.10 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=65.76 s=2931 k=-0.0005 v=55.2 vt=73.7 steer=0.28 leanT=13.5 lean=12.0 lat=0.02 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=66.01 s=2945 k=-0.0009 v=56.7 vt=71.9 steer=0.33 leanT=16.0 lean=14.6 lat=0.18 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=66.26 s=2959 k=-0.0013 v=58.1 vt=70.6 steer=0.39 leanT=18.5 lean=17.1 lat=0.33 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=66.51 s=2974 k=-0.0010 v=58.7 vt=68.9 steer=0.44 leanT=20.8 lean=20.2 lat=0.40 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=66.76 s=2989 k=-0.0009 v=59.8 vt=67.5 steer=0.49 leanT=23.4 lean=22.4 lat=0.48 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=67.01 s=3004 k=-0.0013 v=60.9 vt=66.6 steer=0.55 leanT=26.1 lean=25.0 lat=0.58 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=67.26 s=3019 k=-0.0016 v=62.0 vt=65.1 steer=0.61 leanT=29.1 lean=27.8 lat=0.63 fs=0.00 rs=0.00 surf=road thr=1.00 brk=0.00
+  TRACE t=67.51 s=3035 k=-0.0011 v=62.9 vt=63.4 steer=0.69 leanT=33.0 lean=31.5 lat=0.58 fs=0.00 rs=0.00 surf=road thr=0.37 brk=0.00
+  TRACE t=67.76 s=3050 k=-0.0013 v=62.2 vt=62.0 steer=0.72 leanT=34.5 lean=34.4 lat=0.60 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=68.00 s=3065 k=-0.0016 v=61.1 vt=60.4 steer=0.66 leanT=31.5 lean=33.7 lat=0.69 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=68.25 s=3080 k=-0.0019 v=60.2 vt=60.3 steer=0.58 leanT=27.8 lean=30.5 lat=0.77 fs=0.00 rs=0.00 surf=road thr=0.16 brk=0.00
+  TRACE t=68.50 s=3095 k=-0.0013 v=59.3 vt=58.5 steer=0.61 leanT=29.3 lean=29.5 lat=0.73 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  TRACE t=68.75 s=3110 k=-0.0015 v=58.2 vt=56.7 steer=0.62 leanT=29.7 lean=29.6 lat=0.70 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.03
+  TRACE t=69.00 s=3124 k=-0.0019 v=56.8 vt=54.9 steer=0.57 leanT=27.0 lean=28.5 lat=0.71 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.20
+  TRACE t=69.25 s=3138 k=-0.0023 v=55.5 vt=54.4 steer=0.40 leanT=19.2 lean=22.9 lat=0.76 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.03
+  TRACE t=69.50 s=3152 k=-0.0021 v=54.8 vt=54.9 steer=0.39 leanT=18.5 lean=18.0 lat=0.73 fs=0.00 rs=0.00 surf=road thr=0.17 brk=0.00
+  TRACE t=69.75 s=3166 k=-0.0017 v=54.1 vt=52.9 steer=0.63 leanT=29.8 lean=23.6 lat=0.52 fs=0.00 rs=0.00 surf=road thr=0.00 brk=0.00
+  t= 70s | YOU 3215m 180km/h g5 lean  0 | Marco 3179m 191km/h g5 lean 30 | Kenji 3138m 198km/h g5 lean 23 | Lucas 3108m 206km/h g5 lean 28 | Aiden 3087m 210km/h g5 lean 28 | Rafa 3046m 218km/h g5 lean 32
+  t= 80s | YOU 3645m 187km/h g4 lean 27 | Marco 3606m 172km/h g4 lean 35 | Kenji 3571m 156km/h g4 lean 24 | Lucas 3542m 147km/h g4 lean 37 | Aiden 3522m 146km/h g3 lean 43 | Rafa 3495m 132km/h g3 lean 31
+RESULT valley finished=6/6 crashes=0  YOU 83.1s  Marco 83.9s  Kenji 84.7s  Lucas 85.4s  Aiden 86.0s  Rafa 86.7s  
+TRACK coast L=4135m minR=136m built in 342ms
+  t=  0s | YOU -9m   0km/h g1 lean  0 | Marco -9m   0km/h g1 lean  0 | Kenji -18m   0km/h g1 lean  0 | Lucas -18m   0km/h g1 lean  0 | Aiden -27m   0km/h g1 lean  0 | Rafa -27m   0km/h g1 lean  0
+  t= 10s | YOU 343m 176km/h g4 lean 26 | Marco 345m 173km/h g4 lean 29 | Kenji 326m 178km/h g4 lean 47 | Lucas 333m 175km/h g4 lean 24 | Aiden 319m 177km/h g4 lean 23 | Rafa 325m 175km/h g4 lean 47
+  t= 20s | YOU 768m 194km/h g4 lean 26 | Marco 770m 193km/h g4 lean 24 | Kenji 734m 170km/h g4 lean 27 | Lucas 743m 181km/h g4 lean 31 | Aiden 724m 171km/h g4 lean 40 | Rafa 722m 166km/h g4 lean 41
+  t= 30s | YOU 1226m 181km/h g4 lean 34 | Marco 1226m 180km/h g4 lean 21 | Kenji 1199m 188km/h g4 lean 29 | Lucas 1199m 186km/h g4 lean 38 | Aiden 1179m 191km/h g4 lean 11 | Rafa 1168m 191km/h g4 lean 25
+  crash: Lucas reason=flipped v=24km/h lean=-1° s=1396 lat=-15.0
+  crash: Kenji reason=lowside v=107km/h lean=41° s=1399 lat=-14.7
+  t= 40s | YOU 1700m 192km/h g4 lean 45 | Marco 1699m 191km/h g4 lean 48 | Kenji 1508m  99km/h g1 lean-14 | Lucas 1505m  95km/h g1 lean 10 | Aiden 1639m 177km/h g4 lean 38 | Rafa 1621m 176km/h g4 lean 42
+  t= 50s | YOU 2224m 182km/h g4 lean -4 | Marco 2216m 185km/h g4 lean -6 | Kenji 1985m 179km/h g4 lean 34 | Lucas 1974m 175km/h g4 lean 33 | Aiden 2142m 192km/h g4 lean 37 | Rafa 2115m 185km/h g4 lean 30
+  t= 60s | YOU 2656m 170km/h g4 lean 40 | Marco 2644m 170km/h g4 lean 36 | Kenji 2428m 146km/h g3 lean-28 | Lucas 2414m 137km/h g2 lean-11 | Aiden 2570m 175km/h g4 lean 24 | Rafa 2536m 180km/h g4 lean 31
+  t= 70s | YOU 3209m 175km/h g5 lean 15 | Marco 3192m 181km/h g5 lean 26 | Kenji 2921m 219km/h g5 lean 24 | Lucas 2891m 210km/h g5 lean 29 | Aiden 3098m 210km/h g5 lean 20 | Rafa 3052m 226km/h g5 lean 25
+  t= 80s | YOU 3664m 196km/h g5 lean 30 | Marco 3638m 188km/h g5 lean 37 | Kenji 3434m 146km/h g5 lean 34 | Lucas 3407m 147km/h g5 lean 37 | Aiden 3544m 166km/h g5 lean 34 | Rafa 3508m 150km/h g5 lean 32
+  t= 90s | YOU 4319m 238km/h g6 lean 20 | Marco 4281m 250km/h g6 lean 28 | Kenji 3974m 219km/h g5 lean-32 | Lucas 3929m 208km/h g5 lean-23 | Aiden 4130m 248km/h g6 lean 24 | Rafa 4070m 238km/h g5 lean 17
+RESULT coast finished=6/6 crashes=2  YOU 87.4s  Marco 88.0s  Aiden 90.1s  Rafa 91.0s  Kenji 92.5s  Lucas 93.2s  
+TRACK canyon L=3608m minR=43m built in 262ms
+  t=  0s | YOU -9m   0km/h g1 lean  0 | Marco -9m   0km/h g1 lean  0 | Kenji -18m   0km/h g1 lean  0 | Lucas -18m   0km/h g1 lean  0 | Aiden -27m   0km/h g1 lean  0 | Rafa -27m   0km/h g1 lean  0
+  t= 10s | YOU 288m 161km/h g4 lean  6 | Marco 284m 161km/h g4 lean-25 | Kenji 281m 160km/h g4 lean-39 | Lucas 278m 159km/h g4 lean -7 | Aiden 269m 158km/h g4 lean-32 | Rafa 266m 157km/h g4 lean 16
+  t= 20s | YOU 681m 187km/h g4 lean 29 | Marco 668m 182km/h g4 lean 30 | Kenji 657m 178km/h g3 lean 14 | Lucas 649m 173km/h g3 lean 16 | Aiden 638m 164km/h g3 lean 28 | Rafa 631m 161km/h g3 lean 26
+  t= 30s | YOU 1147m 148km/h g3 lean 32 | Marco 1132m 155km/h g3 lean 28 | Kenji 1117m 162km/h g3 lean -3 | Lucas 1108m 165km/h g3 lean 14 | Aiden 1092m 168km/h g3 lean 14 | Rafa 1082m 164km/h g3 lean 13
+  t= 40s | YOU 1538m 180km/h g4 lean-29 | Marco 1513m 167km/h g3 lean-31 | Kenji 1493m 154km/h g3 lean-22 | Lucas 1481m 155km/h g3 lean-17 | Aiden 1464m 161km/h g3 lean-24 | Rafa 1447m 164km/h g3 lean-18
+  t= 50s | YOU 1973m 137km/h g4 lean 37 | Marco 1949m 134km/h g4 lean 42 | Kenji 1929m 134km/h g4 lean 37 | Lucas 1915m 136km/h g4 lean 40 | Aiden 1896m 135km/h g4 lean 39 | Rafa 1880m 133km/h g4 lean 39
+  t= 60s | YOU 2358m  69km/h g1 lean-42 | Marco 2340m  85km/h g1 lean-35 | Kenji 2324m 100km/h g2 lean-42 | Lucas 2310m 111km/h g2 lean-44 | Aiden 2292m 125km/h g3 lean-27 | Rafa 2272m 138km/h g3 lean-10
+  t= 70s | YOU 2748m 143km/h g4 lean 40 | Marco 2713m 148km/h g4 lean 27 | Kenji 2683m 150km/h g3 lean 24 | Lucas 2655m 161km/h g3 lean 38 | Aiden 2625m 158km/h g3 lean  5 | Rafa 2597m 166km/h g3 lean 21
+  t= 80s | YOU 3154m 159km/h g4 lean 39 | Marco 3115m 151km/h g4 lean 33 | Kenji 3082m 146km/h g3 lean 39 | Lucas 3047m 141km/h g3 lean 33 | Aiden 3017m 139km/h g3 lean 41 | Rafa 2989m 138km/h g3 lean 38
+  t= 90s | YOU 3670m 201km/h g5 lean-24 | Marco 3615m 213km/h g5 lean-24 | Kenji 3564m 204km/h g4 lean 11 | Lucas 3513m 182km/h g4 lean  4 | Aiden 3472m 161km/h g4 lean-13 | Rafa 3437m 154km/h g4 lean-26
+RESULT canyon finished=6/6 crashes=0  YOU 88.9s  Marco 89.9s  Kenji 90.8s  Lucas 91.7s  Aiden 92.6s  Rafa 93.4s  
+AUTOTEST PASS

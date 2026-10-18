@@ -1,0 +1,7 @@
+total 436044
+drwxr-xr-x 2 runner runner      4096 Oct 18 17:31 .
+drwxr-xr-x 3 runner runner      4096 Oct 18 17:31 ..
+-rw-r--r-- 1 runner runner 127260725 Aug 17 14:58 android_debug.apk
+-rw-r--r-- 1 runner runner 104803333 Aug 17 14:58 android_release.apk
+-rw-r--r-- 1 runner runner 214418211 Aug 17 14:58 android_source.zip
+-rw-r--r-- 1 runner runner        13 Aug 17 14:59 version.txt
