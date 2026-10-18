@@ -303,7 +303,7 @@ func _build_naked(paint: Material, alu: Material, rubber: Material, dark: Materi
 	var lcd := Color(0.95, 0.35, 0.1)
 	_digital_dash(Vector3(0, 1.2, -0.6), -0.7, Vector2(0.13, 0.06), Color(0.35, 0.08, 0.02), Color(1.0, 0.92, 0.85), dark)
 	# small headlight cowl visible beyond the dash
-	_ell(self, Vector3(0.12, 0.11, 0.1), Vector3(0, 1.08, -0.78), paint)
+	_ell(self, Vector3(0.1, 0.07, 0.08), Vector3(0, 1.0, -0.8), paint)
 	_ell(self, Vector3(0.24, 0.13, 0.3), Vector3(0, 1.0, -0.14), paint)
 	_ell(self, Vector3(0.05, 0.012, 0.05), Vector3(0, 1.125, -0.24), alu)
 	_box(bars, Vector3(0.22, 0.03, 0.11), Vector3(0, 1.1, -0.5), alu)

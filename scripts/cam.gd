@@ -74,6 +74,8 @@ func _process(delta: float) -> void:
 		if mode == 0:
 			# the rider's head counters part of the lean (horizon tilts less than the bike)
 			basis_cam = b.rotated(-b.z.normalized(), -lean * 0.28)
+		elif mode == 1:
+			basis_cam = b.rotated(-b.z.normalized(), -lean * 0.5)
 		basis_cam = basis_cam * Basis(Vector3.RIGHT, deg_to_rad(-6.0 if mode != 4 else -2.0))
 		global_transform = Transform3D(basis_cam.orthonormalized(), xf * e + b * vib + sh)
 		fov = lerpf(fov, fov_t + (10.0 if mode == 0 else 6.0), clampf(delta * 2.0, 0.0, 1.0))
@@ -91,8 +93,9 @@ func _process(delta: float) -> void:
 		_tv_timer -= delta
 		var rel := p - _tv_pos
 		if _fresh or _tv_timer <= 0.0 or rel.dot(dirv) > 30.0 or rel.length() > 120.0:
-			var side := Vector3(-dirv.z, 0, dirv.x) * (9.0 if randf() < 0.5 else -9.0)
-			_tv_pos = p + dirv * (60.0 + spd * 1.2) + side + Vector3(0, 2.2 + randf() * 3.0, 0)
+			# on the verge, high enough to clear banks and barriers
+			var side := Vector3(-dirv.z, 0, dirv.x) * (6.5 if randf() < 0.5 else -6.5)
+			_tv_pos = p + dirv * (55.0 + spd * 1.0) + side + Vector3(0, 3.2 + randf() * 2.5, 0)
 			_tv_timer = 6.0
 			_fresh = true
 		want_pos = _tv_pos
