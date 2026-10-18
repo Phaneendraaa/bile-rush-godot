@@ -962,35 +962,30 @@ func _test_controls_and_traffic() -> bool:
 	print("CONTROL gas 6s: speed=%.1f km/h gear=%d" % [v_gas * 3.6, int(pb.get("gear"))])
 	if v_gas < 15.0:
 		ok = false
-	var lat0: float = pb.get("lateral")
-	Input.action_press("right")
-	t = 0.0
-	while t < 0.9:
-		await get_tree().physics_frame
-		t += 1.0 / 120.0
-	Input.action_release("right")
-	t = 0.0
-	while t < 1.2:
-		await get_tree().physics_frame
-		t += 1.0 / 120.0
-	var lat1: float = pb.get("lateral")
-	print("CONTROL right 0.9s: lateral %.2f -> %.2f (lean peak while held)" % [lat0, lat1])
-	if lat1 - lat0 < 0.5:
-		ok = false
-	Input.action_press("left")
-	t = 0.0
-	while t < 0.9:
-		await get_tree().physics_frame
-		t += 1.0 / 120.0
-	Input.action_release("left")
-	t = 0.0
-	while t < 1.5:
-		await get_tree().physics_frame
-		t += 1.0 / 120.0
-	var lat2: float = pb.get("lateral")
-	print("CONTROL left 0.9s: lateral %.2f -> %.2f" % [lat1, lat2])
-	if lat2 - lat1 > -0.5:
-		ok = false
+	Input.action_release("gas")
+	# steering response: holding a button must lean the bike that way within half a second
+	for dir_ in [["right", 1.0], ["left", -1.0]]:
+		var pbu2 = player["body"]
+		pbu2.place(float(pb.get("progress")), 1.75, 22.0)
+		t = 0.0
+		while t < 0.4:
+			await get_tree().physics_frame
+			t += 1.0 / 120.0
+		Input.action_press(dir_[0])
+		var peak := 0.0
+		t = 0.0
+		while t < 0.6:
+			await get_tree().physics_frame
+			t += 1.0 / 120.0
+			peak = maxf(peak, float(pb.get("lean")) * float(dir_[1]))
+		Input.action_release(dir_[0])
+		print("CONTROL %s held 0.6s at %.0f km/h: lean %.1f deg toward %s" % [dir_[0], float(pb.get("speed")) * 3.6, rad_to_deg(peak), dir_[0]])
+		if rad_to_deg(peak) < 10.0:
+			ok = false
+		t = 0.0
+		while t < 0.8:
+			await get_tree().physics_frame
+			t += 1.0 / 120.0
 	Input.action_press("brake")
 	Input.action_release("gas")
 	t = 0.0
