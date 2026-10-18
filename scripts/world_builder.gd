@@ -445,6 +445,14 @@ func _scenery() -> void:
 		tries += 1
 		var x := cx + rng.randf_range(-ext, ext)
 		var z := cz + rng.randf_range(-ext, ext)
+		if rng.randf() < 0.6:
+			# most trees line the circuit where the rider actually sees them
+			var side := -1.0 if rng.randf() < 0.5 else 1.0
+			var off := TD.RUNOFF + 8.0 + pow(rng.randf(), 2.0) * 160.0
+			var fp: Dictionary = tr.frame(rng.randf() * tr.L, side * off)
+			var pp: Vector3 = fp["pos"]
+			x = pp.x
+			z = pp.z
 		var q := tr.nearest(x, z)
 		var dist: float = q[1] if q[0] >= 0 else 120.0
 		if dist < TD.RUNOFF + 7.0 or (dist > 600.0):

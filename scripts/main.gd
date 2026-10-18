@@ -13,6 +13,7 @@ const CamScript = preload("res://scripts/cam.gd")
 const UIScript = preload("res://scripts/ui.gd")
 const EngineAudio = preload("res://scripts/engine_audio.gd")
 const Ragdoll = preload("res://scripts/ragdoll.gd")
+const FX = preload("res://scripts/fx.gd")
 
 const COLORS := [
 	Color(0.78, 0.06, 0.08), Color(0.08, 0.3, 0.85), Color(0.05, 0.55, 0.22), Color(0.95, 0.7, 0.05),
@@ -215,6 +216,14 @@ func _make_bike(idx: int, color_idx: int, s: float, d: float, is_player: bool) -
 		entry["ai"] = ai
 	body.set("aids", _aids() if is_player else {"abs": true, "tc": true, "wheelie": true, "lean_limit": true})
 	body.connect("crashed", _on_crashed)
+	if not autotest:
+		var smoke := FX.emitter("smoke")
+		var dust := FX.emitter("dust")
+		for e in [smoke, dust]:
+			body.add_child(e)
+			e.position = Vector3(0, 0.12, 0.72)
+		entry["smoke"] = smoke
+		entry["dust"] = dust
 	if not is_player and not autotest:
 		var v: AudioStreamPlayer3D = EngineAudio.rival_player()
 		body.add_child(v)
@@ -491,6 +500,17 @@ func _update_bikes_visual(dt: float) -> void:
 		var body: RigidBody3D = b["body"]
 		var model = b["model"]
 		model.sync(body, dt)
+		if b.has("smoke"):
+			var spd := absf(float(body.get("speed")))
+			var slide := maxf(float(body.get("rear_slide")), float(body.get("front_slide")))
+			var spin: float = body.get("wheelspin")
+			var grounded: bool = body.get("on_ground")
+			var crashed: bool = body.get("is_crashed")
+			var on_grass: bool = str(body.get("surface")) == "grass"
+			var sm: GPUParticles3D = b["smoke"]
+			var du: GPUParticles3D = b["dust"]
+			sm.emitting = grounded and not on_grass and (spin > 0.15 or (slide > 0.2 and spd > 6.0) or (crashed and spd > 4.0))
+			du.emitting = (grounded or crashed) and on_grass and spd > 4.0
 		if b["voice"] != null:
 			var v: AudioStreamPlayer3D = b["voice"]
 			v.pitch_scale = clampf(float(body.get("rpm")) / EngineAudio.RPM_AT_F0, 0.25, 2.3)
