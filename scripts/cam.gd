@@ -6,17 +6,17 @@ var mode := 0
 var shake := 0.0
 var _pos := Vector3.ZERO
 var _look := Vector3.ZERO
-var _init := true
+var _fresh := true
 var _yaw := 0.0
 
 
 func snap() -> void:
-	_init = true
+	_fresh = true
 
 
 func cycle() -> void:
 	mode = (mode + 1) % 3
-	_init = true
+	_fresh = true
 
 
 func _process(delta: float) -> void:
@@ -29,7 +29,7 @@ func _process(delta: float) -> void:
 		flat = Vector3.FORWARD
 	flat = flat.normalized()
 	var yaw := atan2(-flat.x, -flat.z)
-	if _init:
+	if _fresh:
 		_yaw = yaw
 	_yaw = lerp_angle(_yaw, yaw, clampf(delta * (14.0 if mode == 2 else 5.0), 0.0, 1.0))
 	var dirv := Vector3(-sin(_yaw), 0.0, -cos(_yaw))
@@ -53,10 +53,10 @@ func _process(delta: float) -> void:
 		want_pos = xf * Vector3(0.0, 1.62, -0.05)
 		want_look = xf * Vector3(0.0, 1.35, -12.0)
 		roll = -lean * 0.55
-	var k := 1.0 if _init else clampf(delta * (40.0 if mode == 2 else 7.0), 0.0, 1.0)
+	var k := 1.0 if _fresh else clampf(delta * (40.0 if mode == 2 else 7.0), 0.0, 1.0)
 	_pos = _pos.lerp(want_pos, k)
-	_look = _look.lerp(want_look, 1.0 if _init else clampf(delta * 14.0, 0.0, 1.0))
-	_init = false
+	_look = _look.lerp(want_look, 1.0 if _fresh else clampf(delta * 14.0, 0.0, 1.0))
+	_fresh = false
 	var sh := Vector3.ZERO
 	if shake > 0.0:
 		sh = Vector3(randf_range(-1, 1), randf_range(-1, 1), randf_range(-1, 1)) * shake * 0.08

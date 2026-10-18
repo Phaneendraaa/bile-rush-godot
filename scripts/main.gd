@@ -478,7 +478,7 @@ func _menu_camera(dt: float) -> void:
 	if show_bike == null:
 		return
 	orbit += dt * 0.16
-	var p := show_bike.global_position
+	var p: Vector3 = show_bike.global_position
 	var r := 5.2
 	cam.global_position = p + Vector3(cos(orbit) * r, 1.5 + sin(orbit * 0.6) * 0.35, sin(orbit) * r)
 	var side := Vector3(-sin(orbit), 0, cos(orbit))
