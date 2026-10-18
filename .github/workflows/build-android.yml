@@ -94,6 +94,20 @@ jobs:
           ls -la build/
           test -s build/BikeRush3D.apk
 
+      - name: Publish logs to ci-logs branch
+        if: always()
+        run: |
+          mkdir -p /tmp/cilogs
+          cp *.log /tmp/cilogs/ 2>/dev/null || true
+          ls -la ~/.local/share/godot/export_templates/*/ > /tmp/cilogs/templates.txt 2>&1 || true
+          echo "run ${{ github.run_number }} sha ${GITHUB_SHA::7} status ${{ job.status }}" > /tmp/cilogs/RUN.txt
+          cd /tmp/cilogs
+          git init -q
+          git checkout -q -b ci-logs
+          git add -A
+          git -c user.name=ci -c user.email=ci@localhost commit -qm "logs for run ${{ github.run_number }}"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" ci-logs
+
       - name: Upload logs
         if: always()
         uses: actions/upload-artifact@v4
