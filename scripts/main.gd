@@ -141,7 +141,8 @@ func _highway() -> bool:
 
 
 func _tracks() -> Array:
-	return TD.HIGHWAYS if _highway() else TD.DEFS
+	# traffic modes run on the same three environments as the circuit races
+	return TD.DEFS
 
 
 func _bike_type() -> String:
@@ -159,7 +160,7 @@ func _apply_graphics() -> void:
 
 
 func _ensure_world() -> void:
-	var key := "%d|%d|%d" % [int(settings["mode"]), int(settings["track"]), int(settings["graphics"])]
+	var key := "%d|%d" % [int(settings["track"]), int(settings["graphics"])]
 	if key == loaded_key and world != null:
 		return
 	_clear_bikes()
@@ -172,8 +173,7 @@ func _ensure_world() -> void:
 	tr = TD.new()
 	var tl := _tracks()
 	var def: Dictionary = (tl[clampi(int(settings["track"]), 0, tl.size() - 1)] as Dictionary).duplicate()
-	if _highway():
-		def["two_way"] = int(settings["mode"]) == 0
+	def["two_way"] = int(settings["mode"]) == 0
 	tr.build(def)
 	builder = WorldBuilder.new()
 	world = builder.build(tr, self, _quality())
@@ -199,7 +199,6 @@ func _on_setting(key: String, value: int) -> void:
 	if state != "menu":
 		return
 	if key == "mode":
-		settings["track"] = 0
 		ui.rebuild_menu(settings, _tracks(), COLORS)
 	if key == "graphics":
 		_apply_graphics()
@@ -243,8 +242,8 @@ func _make_bike(idx: int, color_idx: int, s: float, d: float, is_player: bool) -
 		var ck = Cockpit.new()
 		body.add_child(ck)
 		var suit_c: Color = SUITS[color_idx]
-		var glove_c := Color(0.08, 0.08, 0.09) if btype != "naked" else Color(0.1, 0.45, 0.85)
-		ck.build(btype, model.get("paint"), glove_c, suit_c, int(settings["graphics"]) == 2)
+		var glove_c := Color(0.07, 0.07, 0.08)
+		ck.build(btype, model.get("paint"), glove_c, suit_c.darkened(0.25), int(settings["graphics"]) == 2)
 		entry["cockpit"] = ck
 		cam.eye = ck.eye
 	if not is_player or autotest:
@@ -1082,7 +1081,7 @@ func _run_shots() -> void:
 	# highway: cockpit + chase + TV views with traffic
 	for mode_ in [0, 1]:
 		settings["mode"] = mode_
-		for ti in ([0, 1] if mode_ == 0 else [3]):
+		for ti in ([0, 2] if mode_ == 0 else [1]):
 			settings["track"] = ti
 			loaded_key = ""
 			_ensure_world()

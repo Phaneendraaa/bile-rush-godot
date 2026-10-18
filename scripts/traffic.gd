@@ -84,6 +84,10 @@ func update(dt: float, player_s: float, player_lat: float, player_v: float) -> v
 			if pg > 0.0 and pg < gap_min and absf(player_lat - lane) < 1.6:
 				gap_min = pg
 				lead_v = player_v
+		# drivers slow for bends (circuit corners are much tighter than highway curves)
+		var kk := absf(track.curv_at(s + (-25.0 if oncoming else 25.0)))
+		if kk > 1e-4:
+			want = minf(want, sqrt(3.2 / kk))
 		var v: float = c["v"]
 		var safe := 8.0 + v * 1.1
 		if gap_min < safe:

@@ -181,7 +181,7 @@ func build_menu(s: Dictionary, tracks: Array, colors: Array) -> void:
 	var tnames: Array = []
 	for t in tracks:
 		tnames.append(str(t["name"]) + "\n" + str(t["desc"]))
-	_option_row(col, "ROAD" if int(settings.get("mode", 0)) < 2 else "TRACK", "track", tnames, mini(tnames.size(), 4) if tnames.size() == 4 else 3, 84)
+	_option_row(col, "TRACK", "track", tnames, 3, 84)
 	_option_row(col, "BIKE", "bike", ["Sport 1000", "Naked 900", "Cruiser 1800"], 3)
 	_color_row(col, colors)
 	_option_row(col, "THROTTLE", "throttle", ["Manual GAS", "Auto throttle"], 2)

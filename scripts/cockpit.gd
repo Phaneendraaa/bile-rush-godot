@@ -136,11 +136,12 @@ func _grip_and_hand(at: Vector3, axis: Vector3, side: float, rubber: Material, d
 	_tube(bars, at - ax * 0.05 + Vector3(0, 0.02, 0.03), at - ax * 0.07 + Vector3(0, 0.0, -0.02), 0.012, glove)  # thumb
 	# knuckle armour plate
 	_box(bars, Vector3(0.07, 0.012, 0.035), at + Vector3(0, 0.06, -0.005), Mats.std(Color(0.15, 0.15, 0.16), 0.3, 0.5), Vector3(0.3, 0, 0))
-	# wrist and forearm toward the elbow (out of view behind/below the camera)
-	var wrist := at + Vector3(0, 0.035, 0.05)
-	var elbow := Vector3(side * 0.3, eye.y - 0.42, eye.z - 0.05)
-	_tube(bars, wrist, wrist.lerp(elbow, 0.3), 0.032, glove)
-	_tube(bars, wrist.lerp(elbow, 0.3), elbow, 0.045, sleeve)
+	# glove cuff and the start of the forearm; it drops out of view below the camera
+	var wrist := at + Vector3(0, 0.03, 0.05)
+	var elbow := Vector3(side * (absf(at.x) + 0.12), eye.y - 0.62, eye.z - 0.12)
+	var cuff := wrist.lerp(elbow, 0.12)
+	_tube(bars, wrist, cuff, 0.03, glove)
+	_tube(bars, cuff, wrist.lerp(elbow, 0.45), 0.034, sleeve)
 
 
 func _mirror(stalk_from: Vector3, head: Vector3, radii: Vector2, housing: Material, stalk_mat: Material) -> void:
