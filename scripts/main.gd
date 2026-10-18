@@ -279,6 +279,7 @@ func _start_traffic() -> void:
 	if traffic:
 		traffic.queue_free()
 	traffic = Traffic.new()
+	traffic.audio_on = not autotest and (audio == null or not audio.muted)
 	add_child(traffic)
 	var counts := [14, 20, 26]
 	traffic.setup(tr, int(settings["mode"]) == 0, counts[int(settings["graphics"])])

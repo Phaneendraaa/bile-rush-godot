@@ -5,6 +5,7 @@ extends Node3D
 
 const TD = preload("res://scripts/track_data.gd")
 const Mats = preload("res://scripts/materials.gd")
+const EngineAudio = preload("res://scripts/engine_audio.gd")
 
 signal near_miss(car_type, oncoming)
 
@@ -24,6 +25,8 @@ var lanes_onc: Array = []       # oncoming lanes
 var cars: Array = []            # Array of Dictionaries
 var rng := RandomNumberGenerator.new()
 var count := 22
+var audio_on := true
+static var _horn: AudioStreamWAV
 static var _meshes := {}
 static var _mats := {}
 
@@ -104,6 +107,10 @@ func update(dt: float, player_s: float, player_lat: float, player_v: float) -> v
 			var lat_gap := absf(float(c["d"]) - player_lat) - float(c["wid"]) * 0.5
 			if lat_gap < 1.4 and lat_gap > -0.2 and player_v > 27.8:
 				near_miss.emit(c["type"], oncoming)
+				var hn: Node = (c["node"] as Node).get_node_or_null("Horn")
+				if hn and rng.randf() < 0.45:
+					(hn as AudioStreamPlayer3D).pitch_scale = rng.randf_range(0.85, 1.15)
+					(hn as AudioStreamPlayer3D).play()
 		c["side"] = side
 		# recycle
 		var behind := player_s - s
@@ -185,9 +192,49 @@ func _new_car() -> Dictionary:
 	var paint := _paint(PAINTS[rng.randi() % PAINTS.size()]) if kind != "bus" else _paint(Color(0.85, 0.62, 0.08))
 	mi.set_surface_override_material(0, paint)
 	body.add_child(mi)
+	if audio_on:
+		var roar := AudioStreamPlayer3D.new()
+		roar.stream = EngineAudio.noise_loop(420.0, 0.8, "road_roar")
+		roar.unit_size = 5.0 if float(dims[0]) < 6.0 else 8.0
+		roar.max_distance = 140.0
+		roar.volume_db = -8.0
+		roar.doppler_tracking = AudioStreamPlayer3D.DOPPLER_TRACKING_PHYSICS_STEP
+		roar.position = Vector3(0, 0.5, 0)
+		roar.autoplay = true
+		body.add_child(roar)
+		var horn := AudioStreamPlayer3D.new()
+		horn.stream = _horn_stream()
+		horn.unit_size = 14.0
+		horn.max_distance = 200.0
+		horn.name = "Horn"
+		body.add_child(horn)
 	add_child(body)
 	return {"node": body, "type": kind, "len": dims[0], "wid": dims[1], "s": 0.0, "d": 0.0, "lane": 0.0,
 		"v": 0.0, "v_des": 25.0, "onc": false, "side": 0.0}
+
+
+## Two-tone car horn, synthesised once.
+static func _horn_stream() -> AudioStreamWAV:
+	if _horn:
+		return _horn
+	var rate := 22050
+	var n := int(rate * 0.55)
+	var data := PackedByteArray()
+	data.resize(n * 2)
+	for i in n:
+		var t := float(i) / rate
+		var env := minf(1.0, t * 60.0) * minf(1.0, (0.55 - t) * 20.0)
+		var v := 0.0
+		for f in [415.0, 520.0]:
+			var ph := fmod(t * f, 1.0)
+			v += (ph * 2.0 - 1.0) * 0.5          # saw-ish buzz
+		v = tanh(v * 1.6) * 0.5 * env
+		data.encode_s16(i * 2, int(clampf(v, -1.0, 1.0) * 30000.0))
+	_horn = AudioStreamWAV.new()
+	_horn.format = AudioStreamWAV.FORMAT_16_BITS
+	_horn.mix_rate = rate
+	_horn.data = data
+	return _horn
 
 
 static func _paint(col: Color) -> StandardMaterial3D:
