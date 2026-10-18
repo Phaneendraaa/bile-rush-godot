@@ -383,7 +383,7 @@ func _integrate_forces(st: PhysicsDirectBodyState3D) -> void:
 		if on_ground and vmag > 3.0:
 			var yaw_rate := st.angular_velocity.dot(gn)
 			var want_rate := -9.81 * tan(clampf(lean, -1.1, 1.1)) / maxf(speed, 3.0)
-			st.apply_torque(gn * (want_rate - yaw_rate) * 950.0)
+			st.apply_torque(gn * (want_rate - yaw_rate) * 2200.0)
 		# yaw stabiliser at very low speed (rider's feet / steering)
 		if vmag < 4.0 and on_ground:
 			var want_yaw := -steer * 0.8 * smoothstep(0.3, 2.0, vmag)

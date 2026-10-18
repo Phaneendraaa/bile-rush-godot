@@ -33,9 +33,9 @@ const QUALITY := [
 		"tree_shadows": true, "grass": 180, "grass_range": 75.0, "scale": 1.0, "msaa": 2},
 ]
 const DIFF := [
-	{"pace": [0.88, 0.93], "margin": 0.72, "decel": 7.0},
-	{"pace": [0.94, 0.99], "margin": 0.8, "decel": 8.0},
-	{"pace": [0.99, 1.03], "margin": 0.88, "decel": 9.0},
+	{"pace": [0.88, 0.93], "margin": 0.66, "decel": 6.5},
+	{"pace": [0.94, 0.99], "margin": 0.74, "decel": 7.0},
+	{"pace": [0.99, 1.03], "margin": 0.82, "decel": 7.5},
 ]
 const LAPS := [1, 3, 5]
 
