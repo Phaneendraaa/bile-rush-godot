@@ -308,7 +308,7 @@ func _integrate_forces(st: PhysicsDirectBodyState3D) -> void:
 		var vlat := vc.dot(wr)
 		# camber: lean of wheel plane relative to ground normal (+ = leaning right)
 		var gamma := atan2(up.dot(wr), up.dot(n))
-		var alpha := atan2(vlat, maxf(absf(vlong), 3.0))
+		var alpha := atan2(vlat, maxf(absf(vlong), 6.0))
 		var fy := fz * (-C_ALPHA * alpha + C_GAMMA * gamma) if not is_crashed else -fz * clampf(vlat, -1.0, 1.0)
 		# longitudinal demand
 		var fx := 0.0
@@ -329,7 +329,7 @@ func _integrate_forces(st: PhysicsDirectBodyState3D) -> void:
 		var fmax := mu * fz
 		# traction control: keep rear demand inside grip budget
 		if w == 1 and aids["tc"]:
-			var budget := sqrt(maxf(fmax * fmax - fy * fy, 0.0)) * 0.96
+			var budget := maxf(sqrt(maxf(fmax * fmax - fy * fy, 0.0)) * 0.96, fmax * 0.3)
 			if fx > budget:
 				fx = budget
 				if throttle > 0.2:
@@ -367,8 +367,15 @@ func _integrate_forces(st: PhysicsDirectBodyState3D) -> void:
 	rider_offset = lerpf(rider_offset, clampf(lean / 0.9, -1.0, 1.0), clampf(dt * 4.0, 0.0, 1.0))
 	if not is_crashed:
 		var roll_rate := st.angular_velocity.dot(gf)
-		var kp := 2600.0 + 40.0 * vmag
-		var tau := kp * (lean_target - lean) - 520.0 * roll_rate
+		# PD on lean about the contact line (I_eff ~ 120 kg m^2), near-critically damped,
+		# plus gravity feed-forward for the target lean and a hard stop beyond the limit
+		var kp := 9000.0 + 110.0 * vmag
+		var kd := 1.9 * sqrt(kp * 120.0)
+		var tau := kp * (lean_target - lean) - kd * roll_rate
+		tau += mass * 9.81 * 0.62 * sin(lean_target) * 0.35
+		var over := absf(lean) - (lean_max + deg_to_rad(6.0))
+		if over > 0.0:
+			tau -= signf(lean) * over * 40000.0
 		if not on_ground:
 			tau *= 0.3
 		st.apply_torque(gf * tau)
@@ -379,11 +386,11 @@ func _integrate_forces(st: PhysicsDirectBodyState3D) -> void:
 	# ---- crash detection
 	if not is_crashed:
 		var slide := maxf(front_slide, rear_slide * 0.7)
-		if slide > 0.25 and absf(lean) > deg_to_rad(28.0) and vmag > 8.0:
+		if slide > 0.45 and absf(lean) > deg_to_rad(30.0) and vmag > 8.0:
 			_slide_time += dt
 		else:
 			_slide_time = maxf(0.0, _slide_time - dt * 2.0)
-		if _slide_time > 0.35:
+		if _slide_time > 0.45:
 			_crash("lowside")
 		elif absf(lean) > deg_to_rad(68.0) and vmag > 3.0:
 			_crash("fell")
@@ -442,8 +449,8 @@ func _crash(why: String) -> void:
 	is_crashed = true
 	crash_timer = 0.0
 	throttle = 0.0
-	crashed.emit(self)
 	set_meta("crash_reason", why)
+	crashed.emit(self)
 
 
 func _physics_process(delta: float) -> void:

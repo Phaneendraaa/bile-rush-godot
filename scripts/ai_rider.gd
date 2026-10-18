@@ -5,7 +5,7 @@ extends RefCounted
 const TD = preload("res://scripts/track_data.gd")
 
 var skill := 1.0          # 0.85 .. 1.05 (pace)
-var corner_margin := 0.88 # fraction of grip used in corners
+var corner_margin := 0.8  # lateral acceleration used in corners (g)
 var brake_decel := 8.5
 var lane_bias := 0.0
 var _d_target := 0.0
@@ -70,7 +70,7 @@ static func target_speed(bike, track: TD, margin: float, pace: float, decel: flo
 	var v: float = maxf(bike.speed, 0.0)
 	var s: float = bike.progress
 	var vt := 95.0 * pace
-	var mu_use := 1.18 * margin
+	var mu_use := margin   # lateral grip budget in g
 	var x := 0.0
 	while x < 320.0:
 		var kk := absf(track.curv_at(s + x))
