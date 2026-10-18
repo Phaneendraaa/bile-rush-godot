@@ -47,9 +47,9 @@ func _make_theme() -> Theme:
 	sb.set_corner_radius_all(14)
 	sb.content_margin_left = 14; sb.content_margin_right = 14
 	sb.content_margin_top = 8; sb.content_margin_bottom = 8
-	var hov := sb.duplicate()
+	var hov: StyleBoxFlat = sb.duplicate()
 	hov.bg_color = Color(0.12, 0.13, 0.17, 0.9)
-	var sel := sb.duplicate()
+	var sel: StyleBoxFlat = sb.duplicate()
 	sel.bg_color = ACC
 	sel.border_color = Color(1, 0.6, 0.4, 0.8)
 	for s in ["normal", "focus"]:
