@@ -389,8 +389,7 @@ static func car_mesh(kind: String) -> ArrayMesh:
 	for k in order:
 		var st: SurfaceTool = surfaces[k]
 		var arr := st.commit_to_arrays()
-		var verts: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
-		if verts.is_empty():
+		if arr.size() < Mesh.ARRAY_MAX or arr[Mesh.ARRAY_VERTEX] == null or (arr[Mesh.ARRAY_VERTEX] as PackedVector3Array).is_empty():
 			# keep surface indices stable: add a degenerate triangle
 			st = SurfaceTool.new()
 			st.begin(Mesh.PRIMITIVE_TRIANGLES)

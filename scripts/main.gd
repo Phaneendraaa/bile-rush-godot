@@ -446,10 +446,6 @@ func _notification(what: int) -> void:
 
 
 func _unhandled_input(e: InputEvent) -> void:
-	if e.is_action_pressed("cam") and cam.target != null:
-		cam.cycle()
-		if ui:
-			ui.message(cam.mode_name(), 0.9)
 	if e.is_action_pressed("pause"):
 		_set_paused(state != "paused")
 
@@ -548,6 +544,9 @@ func _process(dt: float) -> void:
 		return
 	if bikes.is_empty():
 		return
+	if Input.is_action_just_pressed("cam") and cam.target != null:
+		cam.cycle()
+		ui.message(cam.mode_name(), 0.9)
 	if state == "countdown":
 		countdown -= dt
 		var lit := clampi(int((5.6 - countdown) / 0.9), 0, 5)
@@ -907,9 +906,9 @@ func _test_controls_and_traffic() -> bool:
 	await get_tree().process_frame
 	# 1) every on-screen button must drive its input action when touched
 	for act in ["left", "right", "gas", "brake"]:
-		var btn: TouchScreenButton = ui.btn_nodes[act]
-		var tex: Texture2D = btn.texture_normal
-		var centre := btn.global_position + Vector2(tex.get_width(), tex.get_height()) * 0.5
+		var centre: Vector2 = ui.button_centre(act)
+		# events arrive in window pixels; map from canvas coordinates
+		centre = get_viewport().get_final_transform() * centre
 		var ev := InputEventScreenTouch.new()
 		ev.index = 0
 		ev.position = centre

@@ -402,16 +402,23 @@ func _circle_tex(col: Color, size: int) -> GradientTexture2D:
 	return t
 
 
-func _touch_button(action: String, text: String, size: int, col: Color, passby: bool) -> TouchScreenButton:
-	var b := TouchScreenButton.new()
-	b.texture_normal = _circle_tex(col, size)
-	b.texture_pressed = _circle_tex(Color(col.r * 1.4, col.g * 1.4, col.b * 1.4, 0.95), size)
-	var sh := CircleShape2D.new()
-	sh.radius = size * 0.5
-	b.shape = sh
-	b.shape_centered = true
-	b.action = action
-	b.passby_press = passby
+## On-screen buttons are drawn as sprites; touches are handled by _input below (robust multitouch,
+## sliding a finger from one button to another works, as on real racing games).
+var _fingers := {}          # touch index -> position (canvas coords)
+var _btn_size := {}         # action -> diameter
+var _btn_tex := {}          # action -> [normal, pressed]
+var _held := {}             # action -> bool
+
+
+func _touch_button(action: String, text: String, size: int, col: Color, passby: bool) -> Sprite2D:
+	var b := Sprite2D.new()
+	b.centered = false
+	var tn := _circle_tex(col, size)
+	var tp := _circle_tex(Color(col.r * 1.4, col.g * 1.4, col.b * 1.4, 0.95), size)
+	b.texture = tn
+	_btn_tex[action] = [tn, tp]
+	_btn_size[action] = float(size)
+	_held[action] = false
 	var l := _label(text, int(size * 0.2))
 	l.size = Vector2(size, size)
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -420,6 +427,53 @@ func _touch_button(action: String, text: String, size: int, col: Color, passby: 
 	touch.add_child(b)
 	btn_nodes[action] = b
 	return b
+
+
+func button_centre(action: String) -> Vector2:
+	var b: Node2D = btn_nodes[action]
+	return b.position + Vector2.ONE * float(_btn_size[action]) * 0.5
+
+
+func _input(e: InputEvent) -> void:
+	if touch == null:
+		return
+	if e is InputEventScreenTouch:
+		var t := e as InputEventScreenTouch
+		if t.pressed:
+			_fingers[t.index] = t.position
+		else:
+			_fingers.erase(t.index)
+		_refresh_buttons()
+	elif e is InputEventScreenDrag:
+		var d := e as InputEventScreenDrag
+		_fingers[d.index] = d.position
+		_refresh_buttons()
+
+
+func _refresh_buttons() -> void:
+	for action in _btn_size:
+		var b: Sprite2D = btn_nodes[action]
+		var down := false
+		if touch.visible and b.visible:
+			var c := button_centre(action)
+			var r: float = float(_btn_size[action]) * 0.55   # slightly generous hit area
+			for f in _fingers.values():
+				if (f as Vector2).distance_to(c) <= r:
+					down = true
+					break
+		if down != bool(_held[action]):
+			_held[action] = down
+			b.texture = _btn_tex[action][1] if down else _btn_tex[action][0]
+			if down:
+				Input.action_press(action)
+			else:
+				Input.action_release(action)
+
+
+## Release every on-screen button (pause, menus).
+func release_all() -> void:
+	_fingers.clear()
+	_refresh_buttons()
 
 
 func _build_touch() -> void:
@@ -454,6 +508,8 @@ func _place(k: String, p: Vector2) -> void:
 func show_hud(on: bool, tilt: bool) -> void:
 	hud.visible = on
 	touch.visible = on
+	if not on:
+		release_all()
 	btn_nodes["left"].visible = on and not tilt
 	btn_nodes["right"].visible = on and not tilt
 
@@ -574,6 +630,7 @@ func build_pause() -> void:
 func show_pause(on: bool) -> void:
 	pause_box.visible = on
 	touch.visible = not on and hud.visible
+	release_all()
 
 
 func build_results() -> void:
