@@ -91,7 +91,7 @@ jobs:
           sudo apt-get install -y -qq mesa-vulkan-drivers xvfb > /dev/null
           mkdir -p /tmp/cilogs/shots
           set -o pipefail
-          timeout 600 xvfb-run -a -s "-screen 0 1280x720x24" ~/godot/godot --path . --rendering-method mobile --rendering-driver vulkan --resolution 1280x720 -- --shots 2>&1 | tee render.log
+          timeout 1200 xvfb-run -a -s "-screen 0 1280x720x24" ~/godot/godot --path . --rendering-method mobile --rendering-driver vulkan --resolution 1280x720 -- --shots 2>&1 | tee render.log
           if grep -E "SHADER ERROR|Shader compilation failed|SCRIPT ERROR" render.log; then echo "::error::Shader/script errors when rendering"; exit 1; fi
 
       - name: Export APK
@@ -104,14 +104,6 @@ jobs:
           ~/godot/godot --headless --path . --export-release "Android" build/BikeRush3D.apk 2>&1 | tee export.log
           ls -la build/
           test -s build/BikeRush3D.apk
-
-      - name: Publish GitHub Release with the APK
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          TAG="build-${{ github.run_number }}"
-          MSG="$(git log -1 --format=%s)"
-          gh release create "$TAG" build/BikeRush3D.apk --title "Bike Rush 3D - build ${{ github.run_number }}" --notes "$MSG" --latest
 
       - name: Publish logs to ci-logs branch
         if: always()

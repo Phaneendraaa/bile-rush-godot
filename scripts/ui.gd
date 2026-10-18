@@ -184,7 +184,7 @@ func build_menu(s: Dictionary, tracks: Array, colors: Array) -> void:
 	_color_row(col, colors)
 	_option_row(col, "DIFFICULTY", "difficulty", ["Rookie", "Pro", "Legend"], 3)
 	_option_row(col, "LAPS", "laps", ["1 lap", "3 laps", "5 laps"], 3)
-	_option_row(col, "STEERING", "steering", ["◀ ▶ Buttons", "Tilt phone"], 2)
+	_option_row(col, "STEERING", "steering", ["◀ ▶ Buttons", "Tilt phone", "Tilt (inverted)"], 3)
 	_option_row(col, "RIDER AIDS", "aids", ["Full assist", "Sport", "Off (real)"], 3)
 	_option_row(col, "GRAPHICS", "graphics", ["Performance", "Balanced", "Quality"], 3)
 	_option_row(col, "SOUND", "sound", ["On", "Off"], 2)
