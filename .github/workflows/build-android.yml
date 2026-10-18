@@ -94,11 +94,20 @@ jobs:
           ls -la build/
           test -s build/BikeRush3D.apk
 
+      - name: Publish GitHub Release with the APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="build-${{ github.run_number }}"
+          MSG="$(git log -1 --format=%s)"
+          gh release create "$TAG" build/BikeRush3D.apk --title "Bike Rush 3D - build ${{ github.run_number }}" --notes "$MSG" --latest
+
       - name: Publish logs to ci-logs branch
         if: always()
         run: |
           mkdir -p /tmp/cilogs
           cp *.log /tmp/cilogs/ 2>/dev/null || true
+          cp build/BikeRush3D.apk /tmp/cilogs/ 2>/dev/null || true
           ls -la ~/.local/share/godot/export_templates/*/ > /tmp/cilogs/templates.txt 2>&1 || true
           echo "run ${{ github.run_number }} sha ${GITHUB_SHA::7} status ${{ job.status }}" > /tmp/cilogs/RUN.txt
           cd /tmp/cilogs

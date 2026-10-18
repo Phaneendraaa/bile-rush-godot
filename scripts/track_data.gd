@@ -217,11 +217,11 @@ func ground_height(x: float, z: float) -> float:
 ## Returns Dictionary {pos, heading, k, grade, bank, fwd, right}
 func frame(s: float, d: float) -> Dictionary:
 	var f := fposmod(s, L) / ds
-	var i := int(floor(f)) % N
+	var i := int(floorf(f)) % N
 	var j := (i + 1) % N
-	var t := f - floor(f)
-	var h := HD[i] + wrap_angle(HD[j] - HD[i]) * t
-	var bk := lerpf(BK[i], BK[j], t)
+	var t: float = f - floorf(f)
+	var h: float = HD[i] + wrap_angle(HD[j] - HD[i]) * t
+	var bk: float = lerpf(BK[i], BK[j], t)
 	var right := Vector3(-cos(h), 0.0, sin(h))
 	var p := Vector3(lerpf(X[i], X[j], t), lerpf(Y[i], Y[j], t), lerpf(Z[i], Z[j], t))
 	p += right * d
@@ -233,7 +233,7 @@ func frame(s: float, d: float) -> Dictionary:
 
 
 func curv_at(s: float) -> float:
-	var i := int(floor(fposmod(s, L) / ds)) % N
+	var i := int(floorf(fposmod(s, L) / ds)) % N
 	return K[i]
 
 
