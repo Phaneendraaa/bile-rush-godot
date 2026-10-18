@@ -21,6 +21,7 @@ var size := 0.0
 const PALETTES := {
 	"grass": {"a": Color(0.20, 0.33, 0.09), "b": Color(0.30, 0.40, 0.12), "dirt": Color(0.36, 0.29, 0.2), "rock": Color(0.42, 0.4, 0.37), "sand": Color(0.7, 0.62, 0.45), "rock_slope": 0.62},
 	"coast": {"a": Color(0.36, 0.4, 0.16), "b": Color(0.52, 0.48, 0.28), "dirt": Color(0.58, 0.5, 0.36), "rock": Color(0.5, 0.45, 0.4), "sand": Color(0.82, 0.74, 0.55), "rock_slope": 0.6},
+	"snow": {"a": Color(0.86, 0.88, 0.9), "b": Color(0.78, 0.8, 0.84), "dirt": Color(0.42, 0.4, 0.38), "rock": Color(0.36, 0.36, 0.38), "sand": Color(0.8, 0.8, 0.82), "rock_slope": 0.5},
 	"desert": {"a": Color(0.72, 0.46, 0.27), "b": Color(0.8, 0.56, 0.34), "dirt": Color(0.62, 0.36, 0.2), "rock": Color(0.56, 0.3, 0.18), "sand": Color(0.86, 0.68, 0.45), "rock_slope": 0.55},
 }
 const TIMES := {
@@ -30,6 +31,9 @@ const TIMES := {
 	"sunset": {"sun_dir": Vector3(0.7, -0.16, 0.66), "sun_col": Color(1.0, 0.62, 0.35), "sun_e": 2.6,
 		"zenith": Color(0.16, 0.2, 0.45), "horizon": Color(1.0, 0.56, 0.32), "ground": Color(0.3, 0.22, 0.2),
 		"amb": 0.45, "fog": Color(0.95, 0.62, 0.45), "cloud": 0.45, "cloud_b": 0.9, "exposure": 1.05},
+	"overcast": {"sun_dir": Vector3(-0.3, -0.7, -0.5), "sun_col": Color(0.92, 0.94, 1.0), "sun_e": 1.1,
+		"zenith": Color(0.55, 0.6, 0.66), "horizon": Color(0.82, 0.84, 0.86), "ground": Color(0.6, 0.62, 0.64),
+		"amb": 0.95, "fog": Color(0.8, 0.82, 0.85), "cloud": 0.2, "cloud_b": 0.95, "exposure": 1.05},
 	"afternoon": {"sun_dir": Vector3(-0.55, -0.58, 0.55), "sun_col": Color(1.0, 0.9, 0.76), "sun_e": 2.7,
 		"zenith": Color(0.18, 0.42, 0.75), "horizon": Color(0.86, 0.8, 0.7), "ground": Color(0.5, 0.38, 0.28),
 		"amb": 0.5, "fog": Color(0.88, 0.8, 0.7), "cloud": 0.62, "cloud_b": 1.05, "exposure": 0.95},
@@ -52,6 +56,8 @@ func build(track, parent: Node3D, q: Dictionary) -> Node3D:
 	_collision()
 	_scenery()
 	_props()
+	if tr.def.get("highway", false):
+		_highway_props()
 	return root
 
 
@@ -170,8 +176,13 @@ func _road() -> void:
 	mat.set_shader_parameter("macro", tex["macro"])
 	mat.set_shader_parameter("road_half", H)
 	mat.set_shader_parameter("track_len", tr.L)
+	mat.set_shader_parameter("highway", 1.0 if tr.def.get("highway", false) else 0.0)
+	mat.set_shader_parameter("two_way", 1.0 if tr.def.get("two_way", true) else 0.0)
 	if tr.def["biome"] == "desert":
 		mat.set_shader_parameter("tint", Color(1.06, 1.0, 0.94))
+	elif tr.def["biome"] == "snow":
+		mat.set_shader_parameter("tint", Color(0.92, 0.95, 1.0))
+		mat.set_shader_parameter("wet", 0.6)
 	var mi := MeshInstance3D.new()
 	mi.mesh = mesh
 	mi.material_override = mat
@@ -267,6 +278,8 @@ func _terrain() -> void:
 	cz = b.position.y + b.size.y * 0.5
 	size = maxf(b.size.x, b.size.y) + 1800.0
 	var seg: int = quality.get("terrain_seg", 120)
+	# keep terrain cells ~25 m on long highways so the ground never pokes through the verges
+	seg = clampi(maxi(seg, int(size / 25.0)), seg, 230)
 	var n := seg + 1
 	terrain_rows = n
 	terrain_verts.resize(n * n)
@@ -325,7 +338,7 @@ func _terrain() -> void:
 	mm.mesh = MU.grid_mesh(mv, muv, rings, segs + 1, Vector3.UP)
 	var mmat := Mats.shader_mat(Mats.MOUNTAIN_SHADER)
 	mmat.set_shader_parameter("rock", Color(0.62, 0.38, 0.26) if desert else (Color(0.42, 0.4, 0.45) if coast else Color(0.36, 0.4, 0.42)))
-	mmat.set_shader_parameter("snow_line", 9999.0 if desert or coast else 230.0)
+	mmat.set_shader_parameter("snow_line", 9999.0 if desert or coast else (60.0 if tr.def["biome"] == "snow" else 230.0))
 	mmat.set_shader_parameter("detail", tex["detail"])
 	mm.material_override = mmat
 	mm.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
@@ -429,7 +442,9 @@ func _scenery() -> void:
 	var flora = Flora.new()
 	var tree_count: int = quality.get("trees", 900)
 	var kinds: Array = []
-	if biome == "grass":
+	if biome == "snow":
+		kinds = [[flora.conifer_tree(tex["leaf"], Color(0.2, 0.26, 0.22)), 0.55], [flora.conifer_tree(tex["leaf"], Color(0.5, 0.55, 0.55)), 0.3], [flora.rock(tex["detail"], Color(0.42, 0.42, 0.44)), 0.15]]
+	elif biome == "grass":
 		kinds = [[flora.broadleaf_tree(tex["leaf"], Color(0.2, 0.33, 0.1)), 0.45], [flora.conifer_tree(tex["leaf"]), 0.4], [flora.broadleaf_tree(tex["leaf"], Color(0.3, 0.38, 0.12)), 0.15]]
 	elif biome == "coast":
 		kinds = [[flora.palm_tree(tex["leaf"]), 0.6], [flora.broadleaf_tree(tex["leaf"], Color(0.27, 0.36, 0.13)), 0.25], [flora.bush(tex["leaf"], Color(0.3, 0.38, 0.15)), 0.15]]
@@ -497,7 +512,7 @@ func _scenery() -> void:
 		root.add_child(mmi)
 
 	# grass tufts along the verges (chunked by track distance)
-	if biome != "desert" and quality.get("grass", 0) > 0:
+	if biome != "desert" and biome != "snow" and quality.get("grass", 0) > 0:
 		var gm: Mesh = flora.grass_clump(Color(0.12, 0.2, 0.06) if biome == "grass" else Color(0.22, 0.24, 0.1), Color(0.48, 0.62, 0.24) if biome == "grass" else Color(0.62, 0.6, 0.32))
 		var per_chunk: int = quality.get("grass", 0)
 		var chunk_len := 60.0
@@ -559,6 +574,8 @@ func _scenery() -> void:
 
 # ---------------------------------------------------------------- props
 func _props() -> void:
+	if tr.def.get("highway", false):
+		return
 	var f: Dictionary = tr.frame(0.0, 0.0)
 	var dark := Mats.std(Color(0.16, 0.17, 0.19), 0.6, 0.3)
 	var white := Mats.std(Color(0.85, 0.86, 0.88), 0.5)
@@ -678,3 +695,62 @@ func _box(parent: Node3D, sz: Vector3, pos: Vector3, mat: Material) -> MeshInsta
 	mi.material_override = mat
 	parent.add_child(mi)
 	return mi
+
+
+# ---------------------------------------------------------------- highway props: houses & overpasses
+func _highway_props() -> void:
+	var R: float = TD.RUNOFF
+	var wall_mats := [Mats.std(Color(0.86, 0.82, 0.74), 0.85), Mats.std(Color(0.72, 0.62, 0.52), 0.85),
+		Mats.std(Color(0.9, 0.9, 0.88), 0.8), Mats.std(Color(0.55, 0.38, 0.3), 0.85)]
+	var roof_mats := [Mats.std(Color(0.55, 0.2, 0.15), 0.7), Mats.std(Color(0.25, 0.25, 0.28), 0.7),
+		Mats.std(Color(0.4, 0.28, 0.2), 0.75)]
+	if tr.def["biome"] == "snow":
+		roof_mats = [Mats.std(Color(0.9, 0.92, 0.95), 0.6)]
+	var glass := Mats.std(Color(0.08, 0.1, 0.13), 0.1, 0.6)
+	var door := Mats.std(Color(0.3, 0.2, 0.12), 0.7)
+	var s := 300.0
+	while s < tr.L - 300.0:
+		s += rng.randf_range(160.0, 420.0)
+		var side := -1.0 if rng.randf() < 0.5 else 1.0
+		var n := rng.randi_range(1, 3)
+		for k in n:
+			var d := side * rng.randf_range(R + 18.0, R + 70.0)
+			var f: Dictionary = tr.frame(s + k * rng.randf_range(18.0, 30.0), d)
+			var p: Vector3 = f["pos"]
+			p.y = tr.ground_height(p.x, p.z)
+			if tr.water_level > -999.0 and p.y < tr.water_level + 1.0:
+				continue
+			var house := Node3D.new()
+			house.position = p
+			house.rotation.y = float(f["heading"]) + (PI * 0.5 if rng.randf() < 0.5 else 0.0)
+			root.add_child(house)
+			var w := rng.randf_range(7.0, 12.0)
+			var dpt := rng.randf_range(6.0, 10.0)
+			var h := rng.randf_range(3.0, 6.5)
+			_box(house, Vector3(w, h, dpt), Vector3(0, h * 0.5 - 0.3, 0), wall_mats[rng.randi() % wall_mats.size()])
+			var roof := MeshInstance3D.new()
+			var pm := PrismMesh.new()
+			pm.size = Vector3(w + 0.8, rng.randf_range(1.8, 3.2), dpt + 0.8)
+			roof.mesh = pm
+			roof.position = Vector3(0, h - 0.3 + pm.size.y * 0.5, 0)
+			roof.material_override = roof_mats[rng.randi() % roof_mats.size()]
+			house.add_child(roof)
+			for wx in [-w * 0.28, w * 0.28]:
+				_box(house, Vector3(1.2, 1.1, 0.06), Vector3(wx, h * 0.55, dpt * 0.5 + 0.02), glass)
+			_box(house, Vector3(1.0, 2.0, 0.06), Vector3(0, 0.7, dpt * 0.5 + 0.02), door)
+	# overpasses
+	var concrete := Mats.std(Color(0.62, 0.62, 0.6), 0.9)
+	var os := 900.0
+	while os < tr.L - 600.0:
+		var f: Dictionary = tr.frame(os, 0.0)
+		var op := Node3D.new()
+		op.position = f["pos"]
+		op.rotation.y = f["heading"]
+		root.add_child(op)
+		var span := (R + 6.0) * 2.0
+		_box(op, Vector3(span + 10.0, 1.2, 12.0), Vector3(0, 7.6, 0), concrete)
+		for sz in [-1.0, 1.0]:
+			_box(op, Vector3(span + 10.0, 1.0, 0.3), Vector3(0, 8.7, sz * 5.9), concrete)
+			for sx in [-1.0, 1.0]:
+				_box(op, Vector3(1.4, 7.6, 1.4), Vector3(sx * (R + 3.0), 3.4, sz * 3.5), concrete)
+		os += rng.randf_range(1400.0, 2400.0)

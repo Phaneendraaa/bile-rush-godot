@@ -24,6 +24,7 @@ var helmet: Node3D
 var torso_mi: MeshInstance3D
 var pose := {}            # last computed rider joint positions (bike-local), used by ragdoll
 var number := 1
+var btype := "sport"
 
 static var _shared := {}
 
@@ -62,8 +63,9 @@ static func shared() -> Dictionary:
 	return _shared
 
 
-func build(body_color: Color, suit_color: Color, race_number: int) -> void:
+func build(body_color: Color, suit_color: Color, race_number: int, type_: String = "sport") -> void:
 	number = race_number
+	btype = type_
 	var S := shared()
 	paint = Mats.std(body_color, 0.28, 0.35)
 	paint.clearcoat_enabled = true
@@ -94,28 +96,45 @@ func build(body_color: Color, suit_color: Color, race_number: int) -> void:
 	_box(Vector3(0.28, 0.2, 0.32), Vector3(0, 0.78, -0.2), S["dark_alu"], Vector3(-0.3, 0, 0))
 	# radiator
 	_box(Vector3(0.42, 0.32, 0.05), Vector3(0, 0.72, -0.48), S["plastic"], Vector3(0.2, 0, 0))
-	# fairing: nose, sides, belly pan
-	_ell(Vector3(0.25, 0.27, 0.42), Vector3(0, 0.96, -0.66), paint, Vector3(-0.3, 0, 0))
-	_ell(Vector3(0.13, 0.08, 0.06), Vector3(0.08, 0.95, -1.04), S["headlight"])
-	_ell(Vector3(0.13, 0.08, 0.06), Vector3(-0.08, 0.95, -1.04), S["headlight"])
-	for sx in [-1.0, 1.0]:
-		var side := _box(Vector3(0.05, 0.46, 0.78), Vector3(sx * 0.215, 0.74, -0.38), paint, Vector3(0.22, sx * 0.08, 0))
-		var stripe := _box(Vector3(0.052, 0.08, 0.7), Vector3(sx * 0.218, 0.86, -0.36), white, Vector3(0.22, sx * 0.08, 0))
-		var lbl := Label3D.new()
-		lbl.text = str(race_number)
-		lbl.font_size = 64
-		lbl.pixel_size = 0.004
-		lbl.outline_size = 8
-		lbl.modulate = Color(1, 1, 1)
-		lbl.outline_modulate = Color(0, 0, 0)
-		lbl.position = Vector3(sx * 0.245, 0.68, -0.42)
-		lbl.rotation.y = sx * PI / 2
-		add_child(lbl)
-	_box(Vector3(0.4, 0.12, 0.62), Vector3(0, 0.38, -0.12), paint, Vector3(-0.08, 0, 0))
-	# windscreen
-	_box(Vector3(0.3, 0.012, 0.3), Vector3(0, 1.17, -0.58), S["glass"], Vector3(-0.95, 0, 0))
+	if btype == "sport":
+		# fairing: nose, sides, belly pan
+		_ell(Vector3(0.25, 0.27, 0.42), Vector3(0, 0.96, -0.66), paint, Vector3(-0.3, 0, 0))
+		_ell(Vector3(0.13, 0.08, 0.06), Vector3(0.08, 0.95, -1.04), S["headlight"])
+		_ell(Vector3(0.13, 0.08, 0.06), Vector3(-0.08, 0.95, -1.04), S["headlight"])
+		for sx in [-1.0, 1.0]:
+			var side := _box(Vector3(0.05, 0.46, 0.78), Vector3(sx * 0.215, 0.74, -0.38), paint, Vector3(0.22, sx * 0.08, 0))
+			var stripe := _box(Vector3(0.052, 0.08, 0.7), Vector3(sx * 0.218, 0.86, -0.36), white, Vector3(0.22, sx * 0.08, 0))
+			var lbl := Label3D.new()
+			lbl.text = str(race_number)
+			lbl.font_size = 64
+			lbl.pixel_size = 0.004
+			lbl.outline_size = 8
+			lbl.modulate = Color(1, 1, 1)
+			lbl.outline_modulate = Color(0, 0, 0)
+			lbl.position = Vector3(sx * 0.245, 0.68, -0.42)
+			lbl.rotation.y = sx * PI / 2
+			add_child(lbl)
+		_box(Vector3(0.4, 0.12, 0.62), Vector3(0, 0.38, -0.12), paint, Vector3(-0.08, 0, 0))
+		# windscreen
+		_box(Vector3(0.3, 0.012, 0.3), Vector3(0, 1.17, -0.58), S["glass"], Vector3(-0.95, 0, 0))
+	elif btype == "naked":
+		_ell(Vector3(0.12, 0.12, 0.1), Vector3(0, 1.05, -0.8), paint)                 # headlight cowl
+		_ell(Vector3(0.1, 0.1, 0.03), Vector3(0, 1.04, -0.89), S["headlight"])
+		_box(Vector3(0.36, 0.1, 0.5), Vector3(0, 0.36, -0.12), S["plastic"], Vector3(-0.08, 0, 0))
+		for sx in [-1.0, 1.0]:
+			_box(Vector3(0.05, 0.22, 0.34), Vector3(sx * 0.2, 0.92, -0.42), paint, Vector3(0.3, sx * 0.1, 0))  # tank shrouds
+	else:
+		_ell(Vector3(0.15, 0.15, 0.13), Vector3(0, 0.98, -0.95), S["chrome"])          # headlight bucket
+		_ell(Vector3(0.12, 0.12, 0.03), Vector3(0, 0.98, -1.06), S["headlight"])
+		for sx in [-1.0, 1.0]:
+			_cyl(0.11, 0.42, Vector3(sx * 0.13, 0.66, -0.12), S["chrome"], Vector3(0, 0, sx * 0.55))   # V-twin cylinders
+		_box(Vector3(0.46, 0.06, 0.9), Vector3(0, 0.98, 0.62), paint, Vector3(0.05, 0, 0))            # rear fender
+		_box(Vector3(0.32, 0.05, 0.5), Vector3(0, 1.06, -0.85), paint, Vector3(-0.6, 0, 0))           # front fender
 	# tank
-	_ell(Vector3(0.24, 0.15, 0.32), Vector3(0, 1.05, -0.16), paint)
+	if btype == "cruiser":
+		_ell(Vector3(0.26, 0.15, 0.4), Vector3(0, 0.98, -0.18), paint)
+	else:
+		_ell(Vector3(0.24, 0.15, 0.32), Vector3(0, 1.05, -0.16), paint)
 	# seat + tail
 	_box(Vector3(0.24, 0.07, 0.38), Vector3(0, 1.0, 0.24), S["seat"], Vector3(0.1, 0, 0))
 	_box(Vector3(0.22, 0.2, 0.5), Vector3(0, 1.05, 0.52), paint, Vector3(0.28, 0, 0))
@@ -378,8 +397,13 @@ func _pose_rider(bike) -> void:
 	var lean: float = bike.lean
 	var hang: float = bike.rider_offset   # -1..1 (into the corner)
 	var sa: float = bike.steer_angle
-	var up_ang := lerpf(0.75, 1.32, tuck)      # torso angle from vertical
-	var pelvis := Vector3(hang * 0.17, 1.12, 0.26 - tuck * 0.04)
+	if btype == "cruiser":
+		tuck = 0.0
+	elif btype == "naked":
+		tuck *= 0.5
+	var up_base := 0.75 if btype == "sport" else (0.45 if btype == "naked" else 0.12)
+	var up_ang := lerpf(up_base, 1.32, tuck)      # torso angle from vertical
+	var pelvis := Vector3(hang * 0.17, 1.12 if btype != "cruiser" else 0.98, (0.26 if btype != "cruiser" else 0.34) - tuck * 0.04)
 	var shoulder_c := pelvis + Vector3(hang * 0.12, cos(up_ang) * 0.52, -sin(up_ang) * 0.52)
 	var neck := shoulder_c + Vector3(hang * 0.05, 0.07, -0.05)
 	var head_p := neck + Vector3(hang * 0.07, 0.13 - tuck * 0.03, -0.08 - tuck * 0.05)
@@ -391,13 +415,17 @@ func _pose_rider(bike) -> void:
 		var sname := "l" if side < 0 else "r"
 		var sh := shoulder_c + Vector3(side * 0.19, -0.02, 0)
 		var grip := Vector3(side * 0.31, 1.07, -0.45)
+		if btype == "naked":
+			grip = Vector3(side * 0.38, 1.2, -0.4)
+		elif btype == "cruiser":
+			grip = Vector3(side * 0.5, 1.2, -0.3)
 		var headp := Vector3(0, 1.0, -0.5)
 		grip = headp + (grip - headp).rotated(Vector3.UP, sa * 0.6)
 		var elbow := ik(sh, grip, 0.3, 0.3, Vector3(side * 0.6, -0.6, 0.3))
 		_place_bone("ua_" + sname, sh, elbow)
 		_place_bone("fa_" + sname, elbow, grip)
 		var hip := pelvis + Vector3(side * 0.12, -0.02, 0)
-		var peg := Vector3(side * 0.2, 0.5, 0.32)
+		var peg := Vector3(side * 0.2, 0.5, 0.32) if btype != "cruiser" else Vector3(side * 0.3, 0.42, -0.35)
 		var inside := 1.0 if signf(hang) == side and absf(hang) > 0.2 else 0.0
 		var knee_pole := Vector3(side * (0.4 + inside * 0.9 * absf(hang)), 0.3, -1.0)
 		var knee := ik(hip, peg + Vector3(0, 0.05, -0.02), 0.44, 0.44, knee_pole)

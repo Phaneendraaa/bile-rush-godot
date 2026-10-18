@@ -31,6 +31,34 @@ const TORQUE_NM := [20.0, 48.0, 72.0, 84.0, 98.0, 108.0, 112.0, 101.0, 70.0]
 const C_ALPHA := 13.0      # normalised cornering stiffness (1/rad)
 const C_GAMMA := 0.95      # camber thrust coefficient
 
+const SPECS := {
+	"sport": {"mass": 250.0, "redline": 13000.0, "gears": [0.0, 31.0, 42.0, 51.5, 60.5, 70.0, 82.0], "tq": 1.0, "cda": [0.30, 0.45], "lean": 56.0},
+	"naked": {"mass": 255.0, "redline": 11500.0, "gears": [0.0, 28.0, 38.0, 47.0, 55.0, 62.5, 70.0], "tq": 0.92, "cda": [0.42, 0.5], "lean": 52.0},
+	"cruiser": {"mass": 380.0, "redline": 6200.0, "gears": [0.0, 21.0, 30.0, 39.0, 47.0, 54.0, 61.0], "tq": 1.7, "cda": [0.55, 0.62], "lean": 34.0},
+}
+var bike_type := "sport"
+var redline := REDLINE
+var gear_top: Array = GEAR_TOP.duplicate()
+var tq_k := 1.0
+var rpm_k := 1.0
+var cda := [CDA_TUCK, CDA_UP]
+var lean_cap := deg_to_rad(56.0)
+
+
+func set_type(t: String) -> void:
+	if not SPECS.has(t):
+		t = "sport"
+	bike_type = t
+	var sp: Dictionary = SPECS[t]
+	mass = float(sp["mass"])
+	redline = float(sp["redline"])
+	gear_top = (sp["gears"] as Array).duplicate()
+	tq_k = float(sp["tq"])
+	rpm_k = redline / REDLINE
+	cda = sp["cda"]
+	lean_cap = deg_to_rad(float(sp["lean"]))
+
+
 # ---------------- inputs (set by player/AI each frame)
 var steer := 0.0       # -1..1 desired lean direction (+ = right)
 var throttle := 0.0
@@ -94,7 +122,7 @@ func _ready() -> void:
 	contact_monitor = true
 	max_contacts_reported = 4
 	collision_layer = 4
-	collision_mask = 1 | 2 | 4
+	collision_mask = 1 | 2 | 4 | 16
 	var pm := PhysicsMaterial.new()
 	pm.friction = 0.6
 	pm.bounce = 0.05
@@ -148,17 +176,17 @@ func place(s: float, d: float, v: float = 0.0) -> void:
 
 func torque_at(r: float) -> float:
 	for i in range(1, TORQUE_RPM.size()):
-		if r <= TORQUE_RPM[i]:
-			var a: float = TORQUE_RPM[i - 1]
-			var b: float = TORQUE_RPM[i]
-			return lerpf(TORQUE_NM[i - 1], TORQUE_NM[i], (r - a) / (b - a))
+		if r <= float(TORQUE_RPM[i]) * rpm_k:
+			var a: float = float(TORQUE_RPM[i - 1]) * rpm_k
+			var b: float = float(TORQUE_RPM[i]) * rpm_k
+			return lerpf(TORQUE_NM[i - 1], TORQUE_NM[i], (r - a) / (b - a)) * tq_k
 	return 0.0
 
 
 func gear_ratio(g: int) -> float:
 	# engine rev/s per wheel rev/s
-	var wheel_rps: float = GEAR_TOP[g] / (TAU * R)
-	return (REDLINE / 60.0) / wheel_rps
+	var wheel_rps: float = float(gear_top[g]) / (TAU * R)
+	return (redline / 60.0) / wheel_rps
 
 
 func _integrate_forces(st: PhysicsDirectBodyState3D) -> void:
@@ -203,27 +231,27 @@ func _integrate_forces(st: PhysicsDirectBodyState3D) -> void:
 	var r_from_wheel := eng_rps * 60.0
 	# auto shift
 	if not is_crashed and shift_timer <= 0.0:
-		if r_from_wheel > REDLINE * 0.965 and gear < 6:
+		if r_from_wheel > redline * 0.965 and gear < 6:
 			gear += 1; shift_timer = 0.14
-		elif gear > 1 and wheel_rps * gear_ratio(gear - 1) * 60.0 < REDLINE * 0.8 and (r_from_wheel < 7200.0 or (brake > 0.3 and r_from_wheel < 9500.0)):
+		elif gear > 1 and wheel_rps * gear_ratio(gear - 1) * 60.0 < redline * 0.8 and (r_from_wheel < 7200.0 * rpm_k or (brake > 0.3 and r_from_wheel < 9500.0 * rpm_k)):
 			gear -= 1; shift_timer = 0.1
-	var clutch_rpm := IDLE + throttle * 6500.0
+	var clutch_rpm := IDLE + throttle * 6500.0 * rpm_k
 	var slipping := gear == 1 and r_from_wheel < clutch_rpm
 	var target_rpm := maxf(r_from_wheel, clutch_rpm) if slipping else maxf(r_from_wheel, IDLE)
-	rpm = lerpf(rpm, minf(target_rpm, REDLINE * 1.02), clampf(dt * 12.0, 0.0, 1.0))
+	rpm = lerpf(rpm, minf(target_rpm, redline * 1.02), clampf(dt * 12.0, 0.0, 1.0))
 	var drive := 0.0
 	if not is_crashed and shift_timer <= 0.06:
 		var tq := torque_at(rpm) * throttle
-		if r_from_wheel >= REDLINE * 1.01:
+		if r_from_wheel >= redline * 1.01:
 			tq = 0.0  # limiter
 		drive = tq * gear_ratio(gear) * 0.9 / R
 		if throttle < 0.05 and speed > 2.0:
-			drive -= (rpm / REDLINE) * 380.0  # engine braking
+			drive -= (rpm / redline) * 380.0  # engine braking
 		# wheelie control: cut drive as the front lifts (uses last step's pitch)
 		if aids["wheelie"] and drive > 0.0 and pitch > deg_to_rad(4.0):
 			drive *= clampf(1.0 - (pitch - deg_to_rad(4.0)) / deg_to_rad(5.0), 0.0, 1.0)
 			tc_active = true
-	var d_tuck := lerpf(CDA_UP, CDA_TUCK, tuck)
+	var d_tuck := lerpf(float(cda[1]), float(cda[0]), tuck)
 	var drag := 0.5 * 1.2 * d_tuck * speed * absf(speed)
 	st.apply_central_force(-fwd * drag)
 
@@ -360,7 +388,7 @@ func _integrate_forces(st: PhysicsDirectBodyState3D) -> void:
 	lean = atan2(up.dot(gr), up.dot(gn))
 	pitch = asin(clampf(fwd.dot(Vector3.UP), -1.0, 1.0)) - asin(clampf(gf.dot(Vector3.UP), -1.0, 1.0))
 	var vmag := absf(speed)
-	var lean_max := deg_to_rad(8.0) + deg_to_rad(52.0) * smoothstep(3.0, 20.0, vmag)
+	var lean_max := minf(deg_to_rad(8.0) + deg_to_rad(52.0) * smoothstep(3.0, 20.0, vmag), lean_cap)
 	if aids["lean_limit"]:
 		lean_max = minf(lean_max, atan(mu * 0.93))
 	lean_target = steer * lean_max
@@ -437,6 +465,10 @@ func _on_body_entered(body: Node) -> void:
 			_crash("wall")
 		else:
 			scrape = 1.0
+	elif body is AnimatableBody3D:
+		var cv: Vector3 = body.get_meta("vel", Vector3.ZERO)
+		if (linear_velocity - cv).length() > 4.0:
+			_crash("traffic")
 	elif body is RigidBody3D:
 		var other: RigidBody3D = body
 		var dv := (linear_velocity - other.linear_velocity).length()

@@ -105,7 +105,7 @@ func broadleaf_tree(leaf_tex: Texture2D, col: Color) -> ArrayMesh:
 	return _commit_two(t, _bark(), l, _leaf_mat(leaf_tex, col, 1.3))
 
 
-func conifer_tree(leaf_tex: Texture2D) -> ArrayMesh:
+func conifer_tree(leaf_tex: Texture2D, col: Color = Color(0.12, 0.22, 0.12)) -> ArrayMesh:
 	var t := SurfaceTool.new(); t.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var l := SurfaceTool.new(); l.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var h := 13.0
@@ -119,7 +119,7 @@ func conifer_tree(leaf_tex: Texture2D) -> ArrayMesh:
 			var a := TAU * k / n + i * 0.7
 			var c := Vector3(cos(a) * rad * 0.55, y, sin(a) * rad * 0.55)
 			_card(l, c, rad * 1.05 + 0.6, Vector3(0, y + 1.5, 0), 0.5)
-	return _commit_two(t, _bark(), l, _leaf_mat(leaf_tex, Color(0.12, 0.22, 0.12), 1.8))
+	return _commit_two(t, _bark(), l, _leaf_mat(leaf_tex, col, 1.8))
 
 
 func palm_tree(leaf_tex: Texture2D) -> ArrayMesh:

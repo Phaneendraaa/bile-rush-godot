@@ -177,13 +177,17 @@ func build_menu(s: Dictionary, tracks: Array, colors: Array) -> void:
 	col.add_theme_constant_override("separation", 6)
 	scroll.add_child(col)
 
+	_option_row(col, "MODE", "mode", ["Two-way traffic", "One-way traffic", "Circuit race"], 3)
 	var tnames: Array = []
 	for t in tracks:
 		tnames.append(str(t["name"]) + "\n" + str(t["desc"]))
-	_option_row(col, "TRACK", "track", tnames, 3, 84)
+	_option_row(col, "ROAD" if int(settings.get("mode", 0)) < 2 else "TRACK", "track", tnames, mini(tnames.size(), 4) if tnames.size() == 4 else 3, 84)
+	_option_row(col, "BIKE", "bike", ["Sport 1000", "Naked 900", "Cruiser 1800"], 3)
 	_color_row(col, colors)
-	_option_row(col, "DIFFICULTY", "difficulty", ["Rookie", "Pro", "Legend"], 3)
-	_option_row(col, "LAPS", "laps", ["1 lap", "3 laps", "5 laps"], 3)
+	_option_row(col, "THROTTLE", "throttle", ["Manual GAS", "Auto throttle"], 2)
+	if int(settings.get("mode", 0)) == 2:
+		_option_row(col, "DIFFICULTY", "difficulty", ["Rookie", "Pro", "Legend"], 3)
+		_option_row(col, "LAPS", "laps", ["1 lap", "3 laps", "5 laps"], 3)
 	_option_row(col, "STEERING", "steering", ["◀ ▶ Buttons", "Tilt phone", "Tilt (inverted)"], 3)
 	_option_row(col, "RIDER AIDS", "aids", ["Full assist", "Sport", "Off (real)"], 3)
 	_option_row(col, "GRAPHICS", "graphics", ["Performance", "Balanced", "Quality"], 3)
@@ -255,6 +259,18 @@ func _color_row(parent: Control, colors: Array) -> void:
 		row.add_child(b)
 
 
+func rebuild_menu(s: Dictionary, tracks: Array, colors: Array) -> void:
+	var was := menu != null and menu.visible
+	if menu:
+		menu.queue_free()
+		menu = null
+	build_menu(s, tracks, colors)
+	menu.visible = was
+	# keep the loading/pause/results layers above the menu
+	if loading:
+		move_child(loading, get_child_count() - 1)
+
+
 func show_menu(on: bool) -> void:
 	if menu:
 		menu.visible = on
@@ -280,7 +296,9 @@ func build_hud() -> void:
 		var vb := VBoxContainer.new()
 		vb.add_theme_constant_override("separation", -4)
 		pc.add_child(vb)
-		vb.add_child(_label(k[0], 12, Color(1, 1, 1, 0.6)))
+		var tl_ := _label(k[0], 12, Color(1, 1, 1, 0.6))
+		vb.add_child(tl_)
+		lbl["t_" + str(k[1])] = tl_
 		var v := _label(k[2], k[3])
 		vb.add_child(v)
 		lbl[k[1]] = v
@@ -463,6 +481,30 @@ func _draw_minimap() -> void:
 		minimap.draw_circle(p, 6.5 if me else 5.0, Color.WHITE if me else c)
 		if me:
 			minimap.draw_arc(p, 9.5, 0, TAU, 20, c, 3.0)
+
+
+func set_hud_titles(titles: Array) -> void:
+	var keys := ["pos", "lap", "time", "best"]
+	for i in keys.size():
+		lbl["t_" + keys[i]].text = titles[i]
+
+
+## Highway HUD: score / distance / time / near misses
+func update_hud_highway(d: Dictionary) -> void:
+	lbl["pos"].text = str(int(d["score"]))
+	lbl["lap"].text = "%.2f km" % (float(d["dist"]) / 1000.0)
+	lbl["time"].text = fmt_time(d["time"])
+	lbl["best"].text = "x%d" % int(d["near"])
+	lbl["speed"].text = str(int(round(float(d["speed"]) * 3.6)))
+	lbl["gear"].text = str(d["gear"])
+	rev_bar.value = float(d["rpm"]) / float(d["redline"]) * 13500.0
+	var on := Color(1.0, 0.75, 0.2)
+	var off := Color(1, 1, 1, 0.18)
+	lbl["aid_TC"].add_theme_color_override("font_color", on if d["tc"] else off)
+	lbl["aid_ABS"].add_theme_color_override("font_color", on if d["abs"] else off)
+	lbl["aid_SLIDE"].add_theme_color_override("font_color", Color(1, 0.3, 0.2) if d["slide"] else off)
+	mini_dots = d["dots"]
+	minimap.queue_redraw()
 
 
 func update_hud(d: Dictionary) -> void:

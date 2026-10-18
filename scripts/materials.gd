@@ -42,6 +42,9 @@ uniform sampler2D macro : filter_linear_mipmap, repeat_enable;
 uniform float road_half = 7.0;
 uniform float track_len = 3000.0;
 uniform vec3 tint : source_color = vec3(1.0);
+uniform float highway = 0.0;
+uniform float two_way = 1.0;
+uniform float wet = 0.0;
 void fragment() {
 	vec2 m = UV; // x = lateral metres (-half..half), y = arc metres
 	float g = texture(grain, m * 0.35).r;
@@ -59,15 +62,28 @@ void fragment() {
 	float edge = smoothstep(road_half - 0.6 - aa, road_half - 0.6 + aa, ax) * (1.0 - smoothstep(road_half - 0.28 - aa, road_half - 0.28 + aa, ax));
 	float dash = step(fract(m.y / 14.0), 0.42);
 	float centre = (1.0 - smoothstep(0.08 - aa, 0.08 + aa, ax)) * dash;
+	if (highway > 0.5) {
+		// 4 lanes: dashed lane lines at +-3.5 m; centre = double yellow (two-way) or dashed white (one-way)
+		float lane_d = step(fract(m.y / 12.0), 0.3);
+		float lanes = (1.0 - smoothstep(0.07 - aa, 0.07 + aa, abs(ax - 3.5))) * lane_d;
+		if (two_way > 0.5) {
+			float dy = 1.0 - smoothstep(0.06 - aa, 0.06 + aa, abs(ax - 0.17));
+			col = mix(col, vec3(0.88, 0.66, 0.1), dy * (0.82 + 0.18 * g));
+			rough = mix(rough, 0.55, dy);
+			centre = lanes;
+		} else {
+			centre = max((1.0 - smoothstep(0.07 - aa, 0.07 + aa, ax)) * lane_d, lanes);
+		}
+	}
 	float sy = mod(m.y, track_len);
 	float chk = 0.0;
-	if (sy < 2.4 || sy > track_len - 0.01) {
+	if (highway < 0.5 && (sy < 2.4 || sy > track_len - 0.01)) {
 		chk = mod(floor((m.x + 20.0) / 0.6) + floor(sy / 0.6), 2.0);
 		col = mix(col, vec3(0.86), chk);
 	}
 	// grid boxes behind the start line
 	float back = track_len - sy;
-	if (back > 4.0 && back < 64.0) {
+	if (highway < 0.5 && back > 4.0 && back < 64.0) {
 		float row = mod(back - 4.0, 10.0);
 		float slot = step(row, 0.18) * step(abs(abs(m.x) - 3.4), 1.6);
 		col = mix(col, vec3(0.82), slot * 0.9);
@@ -75,6 +91,9 @@ void fragment() {
 	float paint = max(edge, centre) * (0.82 + 0.18 * g);
 	col = mix(col, vec3(0.86), paint);
 	rough = mix(rough, 0.55, paint);
+	// damp / slushy road: darker, glossier
+	col *= 1.0 - 0.35 * wet;
+	rough = mix(rough, 0.25, wet * (0.6 + 0.4 * mac));
 	ALBEDO = col;
 	ROUGHNESS = rough;
 	SPECULAR = 0.45;

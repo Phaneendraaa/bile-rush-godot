@@ -14,6 +14,9 @@ const UIScript = preload("res://scripts/ui.gd")
 const EngineAudio = preload("res://scripts/engine_audio.gd")
 const Ragdoll = preload("res://scripts/ragdoll.gd")
 const FX = preload("res://scripts/fx.gd")
+const Traffic = preload("res://scripts/traffic.gd")
+const Cockpit = preload("res://scripts/cockpit.gd")
+const BIKE_TYPES := ["sport", "naked", "cruiser"]
 
 const COLORS := [
 	Color(0.78, 0.06, 0.08), Color(0.08, 0.3, 0.85), Color(0.05, 0.55, 0.22), Color(0.95, 0.7, 0.05),
@@ -39,7 +42,8 @@ const DIFF := [
 ]
 const LAPS := [1, 3, 5]
 
-var settings := {"track": 0, "color": 0, "difficulty": 1, "laps": 1, "steering": 0, "aids": 0, "graphics": 1, "sound": 0}
+var settings := {"mode": 0, "track": 0, "bike": 1, "color": 1, "difficulty": 1, "laps": 1, "steering": 0, "throttle": 0,
+	"aids": 1, "graphics": 1, "sound": 0}
 var args := PackedStringArray()
 var autotest := false
 
@@ -61,6 +65,14 @@ var orbit := 0.0
 var steer_in := 0.0
 var last_lap_shown := 0
 var finished_timer := 0.0
+var traffic
+var score := 0.0
+var dist := 0.0
+var near := 0
+var combo_t := 0.0
+var top_speed := 0.0
+var wheelie_t := 0.0
+var bonus_msg_t := 0.0
 
 
 func _ready() -> void:
@@ -85,7 +97,7 @@ func _ready() -> void:
 	add_child(ui)
 	audio = EngineAudio.new()
 	add_child(audio)
-	ui.build_menu(settings, TD.DEFS, COLORS)
+	ui.build_menu(settings, _tracks(), COLORS)
 	ui.build_hud()
 	ui.build_pause()
 	ui.build_results()
@@ -95,7 +107,7 @@ func _ready() -> void:
 	ui.restart.connect(_on_start)
 	ui.quit_to_menu.connect(_go_menu)
 	ui.next_track.connect(func():
-		settings["track"] = (int(settings["track"]) + 1) % TD.DEFS.size()
+		settings["track"] = (int(settings["track"]) + 1) % _tracks().size()
 		_on_start())
 	ui.pause_pressed.connect(func(): _set_paused(state != "paused"))
 	ui.setting_changed.connect(_on_setting)
@@ -124,6 +136,17 @@ func _setup_input() -> void:
 
 
 # ------------------------------------------------------------------ world / settings
+func _highway() -> bool:
+	return int(settings["mode"]) < 2
+
+
+func _tracks() -> Array:
+	return TD.HIGHWAYS if _highway() else TD.DEFS
+
+
+func _bike_type() -> String:
+	return BIKE_TYPES[int(settings["bike"])]
+
 func _quality() -> Dictionary:
 	return QUALITY[int(settings["graphics"])]
 
@@ -136,7 +159,7 @@ func _apply_graphics() -> void:
 
 
 func _ensure_world() -> void:
-	var key := "%d|%d" % [int(settings["track"]), int(settings["graphics"])]
+	var key := "%d|%d|%d" % [int(settings["mode"]), int(settings["track"]), int(settings["graphics"])]
 	if key == loaded_key and world != null:
 		return
 	_clear_bikes()
@@ -147,7 +170,11 @@ func _ensure_world() -> void:
 		world.free()
 		world = null
 	tr = TD.new()
-	tr.build(TD.DEFS[int(settings["track"])])
+	var tl := _tracks()
+	var def: Dictionary = (tl[clampi(int(settings["track"]), 0, tl.size() - 1)] as Dictionary).duplicate()
+	if _highway():
+		def["two_way"] = int(settings["mode"]) == 0
+	tr.build(def)
 	builder = WorldBuilder.new()
 	world = builder.build(tr, self, _quality())
 	loaded_key = key
@@ -171,9 +198,12 @@ func _on_setting(key: String, value: int) -> void:
 		audio.muted = value == 1
 	if state != "menu":
 		return
+	if key == "mode":
+		settings["track"] = 0
+		ui.rebuild_menu(settings, _tracks(), COLORS)
 	if key == "graphics":
 		_apply_graphics()
-	if key == "track" or key == "graphics" or key == "color":
+	if key == "track" or key == "graphics" or key == "color" or key == "mode" or key == "bike":
 		ui.show_loading(true)
 		await get_tree().process_frame
 		await get_tree().process_frame
@@ -197,15 +227,26 @@ func _make_bike(idx: int, color_idx: int, s: float, d: float, is_player: bool) -
 	body.name = "Bike%d" % idx
 	body.set("track", tr)
 	add_child(body)
+	var btype := _bike_type() if is_player else "sport"
+	body.set_type(btype)
 	var model = BikeModel.new()
 	body.add_child(model)
-	model.build(COLORS[color_idx], SUITS[color_idx], idx + 1 if not is_player else 7)
+	model.build(COLORS[color_idx], SUITS[color_idx], idx + 1 if not is_player else 7, btype)
 	body.place(s, d, 0.0)
 	var entry := {
 		"body": body, "model": model, "ai": null, "name": NAMES[idx] if idx < NAMES.size() else "Rider",
 		"idx": idx, "color": COLORS[color_idx], "player": is_player, "finished": false, "time": 0.0,
 		"best": 1e9, "lap_start": 0.0, "laps_done": 0, "ragdoll": null, "crash_t": 0.0, "voice": null,
+		"cockpit": null,
 	}
+	if is_player and not autotest:
+		var ck = Cockpit.new()
+		body.add_child(ck)
+		var suit_c: Color = SUITS[color_idx]
+		var glove_c := Color(0.08, 0.08, 0.09) if btype != "naked" else Color(0.1, 0.45, 0.85)
+		ck.build(btype, model.get("paint"), glove_c, suit_c, int(settings["graphics"]) == 2)
+		entry["cockpit"] = ck
+		cam.eye = ck.eye
 	if not is_player or autotest:
 		var ai = AIRider.new()
 		var dd: Dictionary = DIFF[int(settings["difficulty"])]
@@ -234,6 +275,39 @@ func _make_bike(idx: int, color_idx: int, s: float, d: float, is_player: bool) -
 	return entry
 
 
+func _start_traffic() -> void:
+	if traffic:
+		traffic.queue_free()
+	traffic = Traffic.new()
+	add_child(traffic)
+	var counts := [14, 20, 26]
+	traffic.setup(tr, int(settings["mode"]) == 0, counts[int(settings["graphics"])])
+	traffic.populate(float(player["body"].get("progress")))
+	traffic.near_miss.connect(_on_near_miss)
+	score = 0.0
+	dist = 0.0
+	near = 0
+	top_speed = 0.0
+	wheelie_t = 0.0
+
+
+func _stop_traffic() -> void:
+	if traffic:
+		traffic.queue_free()
+		traffic = null
+
+
+func _on_near_miss(_kind, oncoming) -> void:
+	if state != "race":
+		return
+	near += 1
+	combo_t = 3.0
+	var pts := 500 if oncoming else 300
+	score += pts
+	if ui:
+		ui.message("NEAR MISS  +%d" % pts, 1.0)
+
+
 func _clear_bikes() -> void:
 	for b in bikes:
 		if b["ragdoll"] != null and is_instance_valid(b["ragdoll"]):
@@ -243,10 +317,18 @@ func _clear_bikes() -> void:
 			body.queue_free()
 	bikes.clear()
 	player = {}
+	_stop_traffic()
 
 
 func _spawn_grid() -> void:
 	_clear_bikes()
+	if _highway() and not autotest:
+		var e := _make_bike(0, int(settings["color"]), 20.0, 1.75, true)
+		e["name"] = "YOU"
+		bikes.append(e)
+		player = e
+		_start_traffic()
+		return
 	var others: Array = []
 	for i in COLORS.size():
 		if i != int(settings["color"]):
@@ -277,10 +359,10 @@ func _showroom() -> void:
 	_clear_bikes()
 	if show_bike:
 		show_bike.queue_free()
-	var f: Dictionary = tr.frame(-12.0, 0.0)
+	var f: Dictionary = tr.frame(-12.0 if not _highway() else 30.0, 0.0 if not _highway() else 1.75)
 	show_bike = BikeModel.new()
 	add_child(show_bike)
-	show_bike.build(COLORS[int(settings["color"])], SUITS[int(settings["color"])], 7)
+	show_bike.build(COLORS[int(settings["color"])], SUITS[int(settings["color"])], 7, _bike_type())
 	var fwd: Vector3 = f["fwd"]
 	show_bike.global_transform = Transform3D(Basis.looking_at(fwd, Vector3.UP), f["pos"])
 	# park it on its suspension, slight lean onto the side stand
@@ -328,6 +410,7 @@ func _on_start() -> void:
 	finish_order.clear()
 	countdown = 5.6
 	state = "countdown"
+	ui.set_hud_titles(["SCORE", "DISTANCE", "TIME", "NEAR MISS"] if _highway() else ["POS", "LAP", "TIME", "BEST"])
 	last_lap_shown = 0
 	ui.show_loading(false)
 	ui.show_hud(true, int(settings["steering"]) > 0)
@@ -365,6 +448,8 @@ func _notification(what: int) -> void:
 func _unhandled_input(e: InputEvent) -> void:
 	if e.is_action_pressed("cam") and cam.target != null:
 		cam.cycle()
+		if ui:
+			ui.message(cam.mode_name(), 0.9)
 	if e.is_action_pressed("pause"):
 		_set_paused(state != "paused")
 
@@ -397,6 +482,9 @@ func _physics_process(dt: float) -> void:
 				body.set("throttle", minf(float(cmd[1]), 0.35))
 		else:
 			_player_controls(b, dt, running)
+	if traffic and not player.is_empty():
+		var pb: RigidBody3D = player["body"]
+		traffic.update(dt, float(pb.get("progress")), float(pb.get("lateral")), maxf(float(pb.get("speed")), 0.0))
 	# rubber-banding: keep the pack close to the player
 	if running and not autotest and not player.is_empty():
 		var pp: float = player["body"].get("progress")
@@ -440,6 +528,8 @@ func _player_controls(b: Dictionary, dt: float, running: bool) -> void:
 	body.set("steer", steer)
 	var gas := Input.get_action_strength("gas")
 	var brk := Input.get_action_strength("brake")
+	if int(settings["throttle"]) == 1 and brk < 0.1:
+		gas = maxf(gas, 1.0)
 	body.set("throttle", gas if running else 0.0)
 	body.set("brake", brk if running else 1.0)
 	body.set("tuck", 1.0 if brk < 0.2 else 0.3)
@@ -479,6 +569,8 @@ func _process(dt: float) -> void:
 		race_time += dt
 	_update_bikes_visual(dt)
 	_race_logic(dt)
+	if _highway() and not player.is_empty():
+		_highway_tick(dt)
 	_update_hud()
 	if not player.is_empty():
 		var pb: RigidBody3D = player["body"]
@@ -506,8 +598,15 @@ func _update_bikes_visual(dt: float) -> void:
 		var body: RigidBody3D = b["body"]
 		var model = b["model"]
 		model.sync(body, dt)
-		if b == player and not bool(body.get("is_crashed")):
-			model.set_rider_visible(cam.mode != 2)
+		if b == player:
+			var crashed_: bool = body.get("is_crashed")
+			var m: int = cam.mode
+			var in_cockpit := (m == 0 or m == 4) and not crashed_
+			model.visible = not in_cockpit
+			if not crashed_:
+				model.set_rider_visible(m != 1)
+			if b["cockpit"] != null:
+				b["cockpit"].sync(body, m == 0 and not crashed_)
 		if b.has("smoke"):
 			var spd := absf(float(body.get("speed")))
 			var slide := maxf(float(body.get("rear_slide")), float(body.get("front_slide")))
@@ -530,13 +629,17 @@ func _race_logic(dt: float) -> void:
 	for b in bikes:
 		var body: RigidBody3D = b["body"]
 		var prog: float = body.get("progress")
-		# crash & respawn
+		# crash & respawn (traffic modes: a crash ends the run)
+		if bool(body.get("is_crashed")) and _highway() and not autotest:
+			continue
 		if bool(body.get("is_crashed")):
 			b["crash_t"] = float(b["crash_t"]) + dt
 			if float(b["crash_t"]) > 3.2:
 				_respawn(b)
 			continue
 		if state != "race" and state != "finished":
+			continue
+		if _highway() and not autotest:
 			continue
 		var done := int(floorf(prog / tr.L))
 		if done > int(b["laps_done"]) and done >= 1:
@@ -589,6 +692,9 @@ func _on_crashed(body) -> void:
 				audio.play_crash()
 				cam.shake = 1.0
 				ui.message("CRASH!", 1.6)
+				if _highway() and state == "race":
+					state = "finished"
+					finished_timer = 0.0
 			if autotest:
 				print("  crash: %s reason=%s v=%.0fkm/h lean=%.0f° s=%.0f lat=%.1f" % [b["name"], str(body.get_meta("crash_reason", "?")),
 					float(body.get("speed")) * 3.6, rad_to_deg(float(body.get("lean"))), float(body.get("progress")), float(body.get("lateral"))])
@@ -615,6 +721,13 @@ func _player_finished() -> void:
 
 
 func _show_results() -> void:
+	if _highway():
+		var rows: Array = [["", "", "", "", false],
+			["SCORE", str(int(score)), "", "", true],
+			["DISTANCE", "%.2f km" % (dist / 1000.0), "TIME", UIScript.fmt_time(race_time), false],
+			["NEAR MISSES", str(near), "TOP SPEED", "%d km/h" % int(top_speed * 3.6), false]]
+		ui.show_results("GAME OVER", rows)
+		return
 	var order := _positions()
 	var pos := order.find(player) + 1
 	var rows: Array = [["POS", "RIDER", "TIME", "BEST LAP", false]]
@@ -636,10 +749,53 @@ static func _ord(n: int) -> String:
 	return "%dth" % n
 
 
+func _highway_tick(dt: float) -> void:
+	var pb: RigidBody3D = player["body"]
+	var v := maxf(float(pb.get("speed")), 0.0)
+	if state != "race" or bool(pb.get("is_crashed")):
+		return
+	top_speed = maxf(top_speed, v)
+	dist += v * dt
+	var lat: float = pb.get("lateral")
+	var opposite := int(settings["mode"]) == 0 and lat < 0.0
+	var mult := 1.0
+	if v > 27.8:
+		mult += 0.5
+	if opposite and v > 13.9:
+		mult *= 2.0
+	score += v * dt * 0.5 * mult
+	# wheelie bonus
+	if float(pb.get("pitch")) > deg_to_rad(9.0) and v > 8.0:
+		wheelie_t += dt
+		score += 120.0 * dt
+		if wheelie_t > 0.6 and bonus_msg_t <= 0.0:
+			ui.message("WHEELIE!", 0.8)
+			bonus_msg_t = 1.5
+	else:
+		wheelie_t = 0.0
+	bonus_msg_t = maxf(0.0, bonus_msg_t - dt)
+	if opposite and v > 13.9 and bonus_msg_t <= 0.0 and randf() < dt * 0.3:
+		ui.message("OPPOSITE LANE  x2", 1.0)
+		bonus_msg_t = 3.0
+
+
 func _update_hud() -> void:
 	if player.is_empty() or ui == null:
 		return
 	var pb: RigidBody3D = player["body"]
+	if _highway():
+		var hd := []
+		hd.append([_mini_pos(pb.global_position), player["color"], true])
+		if traffic:
+			for c in traffic.cars:
+				var n: Node3D = c["node"]
+				if absf(float(c["s"]) - float(pb.get("progress"))) < 600.0:
+					hd.append([_mini_pos(n.global_position), Color(0.85, 0.85, 0.85) if not c["onc"] else Color(1.0, 0.5, 0.3), false])
+		ui.update_hud_highway({"score": score, "dist": dist, "time": race_time, "near": near,
+			"speed": absf(float(pb.get("speed"))), "gear": int(pb.get("gear")), "rpm": float(pb.get("rpm")),
+			"redline": float(pb.get("redline")), "tc": bool(pb.get("tc_active")), "abs": bool(pb.get("abs_active")),
+			"slide": float(pb.get("front_slide")) > 0.05 or float(pb.get("rear_slide")) > 0.05, "dots": hd})
+		return
 	var order := _positions()
 	var dots: Array = []
 	for b in bikes:
@@ -660,6 +816,7 @@ func _update_hud() -> void:
 # ------------------------------------------------------------------ CI: headless race
 func _run_autotest() -> void:
 	var ok := true
+	settings["mode"] = 2
 	# audio: loops must be silent outside a race (menu / loading / pause)
 	audio = EngineAudio.new()
 	add_child(audio)
@@ -678,6 +835,8 @@ func _run_autotest() -> void:
 		ok = false
 	audio.queue_free()
 	audio = null
+	if not await _test_controls_and_traffic():
+		ok = false
 	settings["laps"] = 0
 	for ti in TD.DEFS.size():
 		settings["track"] = ti
@@ -733,12 +892,149 @@ func _run_autotest() -> void:
 	get_tree().quit(0 if ok else 1)
 
 
+## Touch controls + manual riding + highway traffic, exactly as on a phone.
+func _test_controls_and_traffic() -> bool:
+	var ok := true
+	ui = UIScript.new()
+	add_child(ui)
+	ui.build_menu(settings, _tracks(), COLORS)
+	ui.build_hud()
+	ui.build_pause()
+	ui.build_results()
+	ui.show_menu(false)
+	ui.show_loading(false)
+	ui.show_hud(true, false)
+	await get_tree().process_frame
+	# 1) every on-screen button must drive its input action when touched
+	for act in ["left", "right", "gas", "brake"]:
+		var btn: TouchScreenButton = ui.btn_nodes[act]
+		var tex: Texture2D = btn.texture_normal
+		var centre := btn.global_position + Vector2(tex.get_width(), tex.get_height()) * 0.5
+		var ev := InputEventScreenTouch.new()
+		ev.index = 0
+		ev.position = centre
+		ev.pressed = true
+		Input.parse_input_event(ev)
+		await get_tree().process_frame
+		await get_tree().process_frame
+		var pressed := Input.is_action_pressed(act)
+		ev = ev.duplicate()
+		ev.pressed = false
+		Input.parse_input_event(ev)
+		await get_tree().process_frame
+		await get_tree().process_frame
+		var released := not Input.is_action_pressed(act)
+		print("TOUCH %s at %s -> pressed=%s released=%s" % [act, str(centre), pressed, released])
+		if not (pressed and released):
+			ok = false
+	# 2) highway run with the player's bike under manual control
+	settings["mode"] = 0
+	settings["track"] = 0
+	settings["aids"] = 1
+	settings["throttle"] = 0
+	loaded_key = ""
+	_ensure_world()
+	autotest = false
+	var e := _make_bike(0, 1, 20.0, 1.75, true)
+	autotest = true
+	bikes.append(e)
+	player = e
+	_start_traffic()
+	print("TRAFFIC cars=%d two_way=%s" % [traffic.cars.size(), str(traffic.two_way)])
+	state = "race"
+	var pb: RigidBody3D = player["body"]
+	var t := 0.0
+	while t < 3.0:
+		await get_tree().physics_frame
+		t += 1.0 / 120.0
+	var v_idle := absf(float(pb.get("speed")))
+	print("CONTROL no input for 3s: speed=%.2f m/s (must stay ~0, no self-driving)" % v_idle)
+	if v_idle > 1.0:
+		ok = false
+	Input.action_press("gas")
+	t = 0.0
+	while t < 6.0:
+		await get_tree().physics_frame
+		t += 1.0 / 120.0
+	var v_gas := float(pb.get("speed"))
+	print("CONTROL gas 6s: speed=%.1f km/h gear=%d" % [v_gas * 3.6, int(pb.get("gear"))])
+	if v_gas < 15.0:
+		ok = false
+	var lat0: float = pb.get("lateral")
+	Input.action_press("right")
+	t = 0.0
+	while t < 0.9:
+		await get_tree().physics_frame
+		t += 1.0 / 120.0
+	Input.action_release("right")
+	t = 0.0
+	while t < 1.2:
+		await get_tree().physics_frame
+		t += 1.0 / 120.0
+	var lat1: float = pb.get("lateral")
+	print("CONTROL right 0.9s: lateral %.2f -> %.2f (lean peak while held)" % [lat0, lat1])
+	if lat1 - lat0 < 0.5:
+		ok = false
+	Input.action_press("left")
+	t = 0.0
+	while t < 0.9:
+		await get_tree().physics_frame
+		t += 1.0 / 120.0
+	Input.action_release("left")
+	t = 0.0
+	while t < 1.5:
+		await get_tree().physics_frame
+		t += 1.0 / 120.0
+	var lat2: float = pb.get("lateral")
+	print("CONTROL left 0.9s: lateral %.2f -> %.2f" % [lat1, lat2])
+	if lat2 - lat1 > -0.5:
+		ok = false
+	Input.action_press("brake")
+	Input.action_release("gas")
+	t = 0.0
+	while t < 2.0:
+		await get_tree().physics_frame
+		t += 1.0 / 120.0
+	Input.action_release("brake")
+	print("CONTROL brake 2s: speed=%.1f km/h" % (float(pb.get("speed")) * 3.6))
+	var ck = player["cockpit"]
+	if ck != null:
+		ck.sync(pb, true)
+		print("COCKPIT ok eye=%s" % str(ck.eye))
+	# 3) autopilot through traffic for 40 s: cars move, near misses register, no script errors
+	player["ai"] = AIRider.new()
+	var crashes := {"n": 0}
+	pb.connect("crashed", func(_b): crashes["n"] += 1)
+	var s0: float = traffic.cars[0]["s"]
+	t = 0.0
+	while t < 40.0:
+		await get_tree().physics_frame
+		t += 1.0 / 120.0
+		if bool(pb.get("is_crashed")):
+			await get_tree().physics_frame
+			var pbu = player["body"]
+			pbu.place(float(pb.get("progress")), 1.75, 20.0)
+	var moved := absf(float(traffic.cars[0]["s"]) - s0)
+	print("TRAFFIC after 40s: rider %.0f m, %d near misses, %d crashes, car0 moved %.0f m" % [float(pb.get("progress")), near, crashes["n"], moved])
+	if moved < 50.0:
+		ok = false
+	_clear_bikes()
+	state = "menu"
+	settings["mode"] = 2
+	settings["track"] = 0
+	loaded_key = ""
+	ui.queue_free()
+	ui = null
+	return ok
+
+
 # ------------------------------------------------------------------ CI: screenshots
 func _run_shots() -> void:
 	var dir := OS.get_environment("SHOTS_DIR")
 	if dir == "":
 		dir = OS.get_user_data_dir() + "/shots"
 	DirAccess.make_dir_recursive_absolute(dir)
+	settings["mode"] = 2
 	ui = UIScript.new()
 	add_child(ui)
 	ui.build_menu(settings, TD.DEFS, COLORS)
@@ -780,6 +1076,33 @@ func _run_shots() -> void:
 			_save(dir, "%s_race%d" % [TD.DEFS[ti]["id"], k])
 		_clear_bikes()
 		state = "menu"
+	# highway: cockpit + chase + TV views with traffic
+	for mode_ in [0, 1]:
+		settings["mode"] = mode_
+		for ti in ([0, 1] if mode_ == 0 else [3]):
+			settings["track"] = ti
+			loaded_key = ""
+			_ensure_world()
+			var e := _make_bike(0, 1, 20.0, 1.75, true)
+			bikes.append(e)
+			player = e
+			e["ai"] = AIRider.new()
+			_start_traffic()
+			cam.target = e["body"]
+			state = "race"
+			ui.show_menu(false)
+			ui.show_hud(true, false)
+			ui.set_hud_titles(["SCORE", "DISTANCE", "TIME", "NEAR MISS"])
+			ui.set_lights(0, false)
+			var id: String = _tracks()[ti]["id"]
+			for k in [0, 2, 5, 1]:
+				cam.mode = k
+				cam.snap()
+				for _f in 70:
+					await get_tree().process_frame
+				_save(dir, "hw_%s_%d" % [id, k])
+			_clear_bikes()
+	settings["mode"] = 2
 	print("SHOTS DONE")
 	get_tree().quit(0)
 

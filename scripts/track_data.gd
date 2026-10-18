@@ -25,6 +25,30 @@ const DEFS := [
 	},
 ]
 
+## Long, gently curving highways for the traffic modes.
+const HIGHWAYS := [
+	{
+		"id": "alpine", "name": "Alpine Pass", "desc": "Snowy mountain highway, overcast",
+		"R": 1300.0, "harm": [[2, 0.12, 0.5], [3, 0.07, 1.2], [5, 0.02, 2.0]],
+		"hills": 48.0, "seed": 53, "time": "overcast", "biome": "snow", "highway": true,
+	},
+	{
+		"id": "country", "name": "Countryside", "desc": "Farmland, houses and overpasses",
+		"R": 1400.0, "harm": [[2, 0.15, 1.0], [3, 0.06, 0.3], [4, 0.025, 2.2]],
+		"hills": 22.0, "seed": 61, "time": "noon", "biome": "grass", "highway": true,
+	},
+	{
+		"id": "coastway", "name": "Coastal Highway", "desc": "Sunset cruise along the sea",
+		"R": 1350.0, "harm": [[2, 0.1, 2.4], [3, 0.08, 0.7], [5, 0.02, 1.4]],
+		"hills": 16.0, "seed": 71, "time": "sunset", "biome": "coast", "highway": true,
+	},
+	{
+		"id": "desertway", "name": "Desert Highway", "desc": "Endless straights through the dunes",
+		"R": 1500.0, "harm": [[2, 0.13, 0.2], [3, 0.05, 2.6], [4, 0.02, 1.0]],
+		"hills": 30.0, "seed": 83, "time": "afternoon", "biome": "desert", "highway": true,
+	},
+]
+
 var def: Dictionary
 var N: int = 0
 var L: float = 0.0
