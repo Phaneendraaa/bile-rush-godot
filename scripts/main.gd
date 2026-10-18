@@ -89,6 +89,7 @@ func _ready() -> void:
 	ui.build_hud()
 	ui.build_pause()
 	ui.build_results()
+	ui.set_lights(0, false)
 	ui.start_race.connect(_on_start)
 	ui.resume.connect(func(): _set_paused(false))
 	ui.restart.connect(_on_start)
@@ -490,8 +491,10 @@ func _menu_camera(dt: float) -> void:
 	var p: Vector3 = show_bike.global_position
 	var r := 5.2
 	cam.global_position = p + Vector3(cos(orbit) * r, 1.5 + sin(orbit * 0.6) * 0.35, sin(orbit) * r)
-	var side := Vector3(-sin(orbit), 0, cos(orbit))
-	cam.look_at(p + Vector3(0, 0.75, 0) + side * 1.4, Vector3.UP)
+	cam.look_at(p + Vector3(0, 0.75, 0), Vector3.UP)
+	# frame the bike in the gap between the title column and the settings panel
+	var right: Vector3 = cam.global_basis.x
+	cam.look_at(p + Vector3(0, 0.75, 0) + right * 1.1, Vector3.UP)
 	cam.fov = 50.0
 
 
@@ -500,6 +503,8 @@ func _update_bikes_visual(dt: float) -> void:
 		var body: RigidBody3D = b["body"]
 		var model = b["model"]
 		model.sync(body, dt)
+		if b == player and not bool(body.get("is_crashed")):
+			model.set_rider_visible(cam.mode != 2)
 		if b.has("smoke"):
 			var spd := absf(float(body.get("speed")))
 			var slide := maxf(float(body.get("rear_slide")), float(body.get("front_slide")))
@@ -676,6 +681,14 @@ func _run_autotest() -> void:
 			sim += 1.0 / 120.0
 			race_time = sim
 			_race_logic(1.0 / 120.0)
+			if ti == 0 and sim < 70.0 and int(sim * 120.0) % 30 == 0:
+				var mb = bikes[1]["body"]
+				var ai = bikes[1]["ai"]
+				print("  TRACE t=%.2f s=%.0f k=%.4f v=%.1f vt=%.1f steer=%.2f leanT=%.1f lean=%.1f lat=%.2f fs=%.2f rs=%.2f surf=%s thr=%.2f brk=%.2f" % [
+					sim, float(mb.progress), tr.curv_at(float(mb.progress)), float(mb.speed),
+					AIRider.target_speed(mb, tr, ai.corner_margin, ai.skill, ai.brake_decel), float(mb.steer),
+					rad_to_deg(float(mb.lean_target)), rad_to_deg(float(mb.lean)), float(mb.lateral),
+					float(mb.front_slide), float(mb.rear_slide), str(mb.surface), float(mb.throttle), float(mb.brake)])
 			if sim >= next_log:
 				next_log += 10.0
 				var line := "  t=%3.0fs" % sim
@@ -738,6 +751,7 @@ func _run_shots() -> void:
 		state = "race"
 		countdown = 0.0
 		ui.show_hud(true, false)
+		ui.set_lights(0, false)
 		for k in 3:
 			for _f in 90:
 				await get_tree().process_frame

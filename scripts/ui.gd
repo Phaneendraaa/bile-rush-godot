@@ -164,7 +164,7 @@ func build_menu(s: Dictionary, tracks: Array, colors: Array) -> void:
 
 	var panel := PanelContainer.new()
 	panel.set_anchors_preset(Control.PRESET_RIGHT_WIDE)
-	panel.offset_left = -620
+	panel.offset_left = -660
 	panel.offset_right = -30
 	panel.offset_top = 24
 	panel.offset_bottom = -24
@@ -210,7 +210,9 @@ func _option_row(parent: Control, title: String, key: String, opts: Array, cols:
 		b.button_group = group
 		b.custom_minimum_size = Vector2(0, h)
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		b.add_theme_font_size_override("font_size", 17 if h > 60 else 19)
+		b.add_theme_font_size_override("font_size", 16 if h > 60 else 18)
+		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		b.clip_text = true
 		b.button_pressed = int(settings.get(key, 0)) == i
 		var idx := i
 		b.pressed.connect(func():
