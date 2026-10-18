@@ -1091,6 +1091,7 @@ func _run_shots() -> void:
 			e["ai"] = AIRider.new()
 			_start_traffic()
 			cam.target = e["body"]
+			ui.hide_results()
 			state = "race"
 			ui.show_menu(false)
 			ui.show_hud(true, false)
