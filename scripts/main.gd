@@ -941,8 +941,6 @@ func _test_controls_and_traffic() -> bool:
 	autotest = true
 	bikes.append(e)
 	player = e
-	_start_traffic()
-	print("TRAFFIC cars=%d two_way=%s" % [traffic.cars.size(), str(traffic.two_way)])
 	state = "race"
 	var pb: RigidBody3D = player["body"]
 	var t := 0.0
@@ -999,6 +997,10 @@ func _test_controls_and_traffic() -> bool:
 		ck.sync(pb, true)
 		print("COCKPIT ok eye=%s" % str(ck.eye))
 	# 3) autopilot through traffic for 40 s: cars move, near misses register, no script errors
+	var pbr = player["body"]
+	pbr.place(float(pb.get("progress")), 1.75, 20.0)
+	_start_traffic()
+	print("TRAFFIC cars=%d two_way=%s" % [traffic.cars.size(), str(traffic.two_way)])
 	player["ai"] = AIRider.new()
 	var crashes := {"n": 0}
 	pb.connect("crashed", func(_b): crashes["n"] += 1)
