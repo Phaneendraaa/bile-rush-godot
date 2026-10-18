@@ -8,6 +8,7 @@ config/description="Realistic motorcycle racing"
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
 config/icon="res://icon.png"
+config/quit_on_go_back=false
 boot_splash/bg_color=Color(0.04, 0.05, 0.08, 1)
 boot_splash/show_image=false
 
