@@ -83,6 +83,17 @@ jobs:
           if grep -E "SCRIPT ERROR|Parse Error|Invalid call|Invalid access|Invalid get|Invalid set|Invalid operands|Nonexistent function|Out of bounds" autotest.log; then echo "::error::Runtime errors in autotest"; exit 1; fi
           grep -q "AUTOTEST PASS" autotest.log || { echo "::error::Autotest did not pass"; exit 1; }
 
+      - name: Render test (real Mobile renderer on software Vulkan) + screenshots
+        continue-on-error: true
+        env:
+          SHOTS_DIR: /tmp/cilogs/shots
+        run: |
+          sudo apt-get install -y -qq mesa-vulkan-drivers xvfb > /dev/null
+          mkdir -p /tmp/cilogs/shots
+          set -o pipefail
+          timeout 600 xvfb-run -a -s "-screen 0 1280x720x24" ~/godot/godot --path . --rendering-method mobile --rendering-driver vulkan --resolution 1280x720 -- --shots 2>&1 | tee render.log
+          if grep -E "SHADER ERROR|Shader compilation failed|SCRIPT ERROR" render.log; then echo "::error::Shader/script errors when rendering"; exit 1; fi
+
       - name: Export APK
         env:
           GODOT_ANDROID_KEYSTORE_RELEASE_PATH: ${{ github.workspace }}/ci/release.keystore
@@ -107,6 +118,7 @@ jobs:
         run: |
           mkdir -p /tmp/cilogs
           cp *.log /tmp/cilogs/ 2>/dev/null || true
+          rm -rf /tmp/cilogs/.git
           cp build/BikeRush3D.apk /tmp/cilogs/ 2>/dev/null || true
           ls -la ~/.local/share/godot/export_templates/*/ > /tmp/cilogs/templates.txt 2>&1 || true
           echo "run ${{ github.run_number }} sha ${GITHUB_SHA::7} status ${{ job.status }}" > /tmp/cilogs/RUN.txt
@@ -125,6 +137,7 @@ jobs:
           path: |
             import.log
             autotest.log
+            render.log
             export.log
 
       - name: Upload APK artifact
